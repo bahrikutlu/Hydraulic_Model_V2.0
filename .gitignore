@@ -1,0 +1,12 @@
+/venv/
+/output/calculation_results/output.csv
+/output/charts/annular_pressure_drop.html
+/output/charts/drill_pipe_pressure_drop.html
+/output/charts/ecd.html
+/output/charts/ecd_zoomed.html
+/output/charts/pump_pressure.html
+/output/charts/tvd_vs_distance.html
+/output/directional_plan/directional_plan_processed.csv
+/output/output_report/output.html
+/output/plots/flow_curve.png
+/output/plots/wellbore_schematic.png
