@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <h1>ECD Model</h1>
+    
+    <h2>Casing Summary:</h2>
+    {{ casing_table }}
+    
+    <h2>Drill String and Bottom Hole Assembly:</h2>
+    {{ drill_string_and_bha_table }}
+
+    <h2>Bit Table:</h2>
+
+
+    <h2>Wellbore Schematic:</h2>
+    <img src="plots/wellbore_schematic.png">
+
+    <h2>Fluid Properties:</h2>
+    <img src="plots/flow_curve.png">
+
+    <h2>Wellbore Profile:</h2>
+    {% include 'output/charts/tvd_vs_distance.html' %}
+
+    <h2>Charts:</h2>
+    {% include 'output/charts/ecd.html' %}
+    {% include 'output/charts/annular_pressure_drop.html' %}
+    {% include 'output/charts/drill_pipe_pressure_drop.html' %}
+    {% include 'output/charts/pump_pressure.html' %}
+
+</body>
+</html>
