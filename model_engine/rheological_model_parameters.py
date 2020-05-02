@@ -1,10 +1,10 @@
 from scipy.optimize import curve_fit
 from matplotlib import pyplot as plt
 
-# shear_rate = [1022, 511, 340, 170, 10.22, 5.11]
-# shear_stress = [54, 38, 31, 23, 8, 7]
-# fluid_type = "PL"
-
+shear_rate = [1022, 511, 340, 170, 10.22, 5.11]
+shear_stress = [54, 38, 31, 23, 8, 7]
+fluid_type = "PL"
+from definitions import flow_curve_image_directory
 
 
 def yield_power_law_model(sr, taoy, k, m):
@@ -38,8 +38,10 @@ def fluid_properties_plotter(shear_rate, shear_stress, fluid_type):
     plt.plot(shear_rate, shear_stress, 'o', color='red', label="data")
     plt.plot(shear_rate, flow_curve, '--', color='blue', label="optimized data")
     plt.legend()
-    plt.savefig('output/plots/flow_curve.png')
+    plt.savefig(flow_curve_image_directory)
+    plt.close()
+
 
 # USE FOLLOWING TO CALL THE FUNCTIONS
-# print(rheological_parameters(shear_rate, shear_stress, fluid_type))
-# fluid_properties_plotter(shear_rate, shear_stress, fluid_type)
+print(rheological_parameters(shear_rate, shear_stress, fluid_type))
+fluid_properties_plotter(shear_rate, shear_stress, fluid_type)

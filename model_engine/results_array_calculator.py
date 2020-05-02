@@ -1,5 +1,7 @@
 import numpy as np
 import sys
+
+from definitions import output_raw_si_units, output_raw_field_units
 from utilities.unit_converters import *
 from utilities import column_names as columns
 from model_engine.surface_bit_bha_pressure_drop import misc_parasitic_losses
@@ -103,7 +105,7 @@ class ResultArray:
         # send results to another function to calculate ecd
         results_si_units = equivalent_circulating_density_calculator(results_si_units, mud_density)
         # save results as csv file and pandas data frame
-        file_name_and_directory = 'output/calculation_results/raw/pressure_drop_si.csv'
+        file_name_and_directory = output_raw_si_units
         np.savetxt(file_name_and_directory, results_si_units, delimiter=',', fmt='%1.3f')
         data_frame_creator(file_name_and_directory)
         return results_si_units
@@ -125,7 +127,7 @@ class ResultArray:
         results_field_units = np.concatenate([results_field_units, pressure_drops, equivalent_circulating_density],
                                              axis=1)
         # save results as csv file and pandas data frame
-        file_name_and_directory = 'output/calculation_results/raw/pressure_drop_field.csv'
+        file_name_and_directory = output_raw_field_units
         np.savetxt(file_name_and_directory, results_field_units, delimiter=',', fmt='%1.3f')
         data_frame_creator(file_name_and_directory)
         return results_field_units

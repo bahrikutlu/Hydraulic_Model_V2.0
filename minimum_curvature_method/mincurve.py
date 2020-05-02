@@ -1,5 +1,5 @@
 import pandas as pd
-
+from definitions import output_directional_directory
 from minimum_curvature_method.checkarrays import *
 np.seterr(divide='ignore', invalid='ignore')
 
@@ -200,5 +200,5 @@ def generate_full_directional_plan(input_plan_csv, vertical_section_plane=0):
     header = ["Measured Depth", "Inclination", "Azimuth", "TVD", "Northing","Easting", "Dogleg Severity", "Closure Azimuth", "Closure Distance", "Vertical Section"]
     results = np.column_stack((md_inc_azi,tvd_northing_easting_dls,closure_azimuth,closure_distance,vert_section))
     results = pd.DataFrame(data=results, columns=header)
-    results.to_csv('output/directional_plan/directional_plan_processed.csv', index=False)
+    results.to_csv(output_directional_directory, index=False)
 

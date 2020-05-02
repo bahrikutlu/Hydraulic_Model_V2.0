@@ -1,6 +1,8 @@
 from operator import itemgetter
 import numpy as np
 from scipy import interpolate
+
+from definitions import output_directional_directory
 from utilities import column_names as columns
 from minimum_curvature_method import mincurve
 
@@ -14,7 +16,7 @@ class WellTrajectory:
     def __init__(self, file_name):
         self.filename = file_name
         self.create = mincurve.generate_full_directional_plan(self.filename)
-        self.load_csv = np.genfromtxt("output/directional_plan/directional_plan_processed.csv", delimiter=',', skip_header=1)
+        self.load_csv = np.genfromtxt(output_directional_directory, delimiter=',', skip_header=1)
         self.measured_depths = self.load_csv[:, columns.directional_plan_column_names["measured_depth"]]
         self.inclination = self.load_csv[:, columns.directional_plan_column_names["inclination"]]
         self.azimuth = self.load_csv[:, columns.directional_plan_column_names["azimuth"]]

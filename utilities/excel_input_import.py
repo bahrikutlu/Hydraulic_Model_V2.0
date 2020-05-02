@@ -1,11 +1,12 @@
 import openpyxl
+from definitions import input_well
 
 
 class ImportFromExcel:
     def __init__(self, sheet_name):
         # opens the input xlsx and loads the sheet name that is provided. sheet name is provided as string
         self.sheet_name = sheet_name
-        self.wb = openpyxl.load_workbook("input/input.xlsx")
+        self.wb = openpyxl.load_workbook(input_well)
         self.sheet = self.wb[sheet_name]
         self.drill_string = list()
         self.bottom_hole_assembly = list()

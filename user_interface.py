@@ -4,6 +4,7 @@ from utilities.charts_and_schematics import wellbore_schematic
 from utilities.unit_converters import *
 import datetime
 from model_engine.results_array_calculator import ResultArray
+from definitions import input_directional_plan_directory
 
 # inputs are pulled from the input.xlsx excel file located in the input folder.
 # change the simulation name variable below to the name of the sheet in excel if
@@ -65,7 +66,7 @@ input_data = ResultArray(bit,
                          bottom_hole_assembly,
                          casing_design,
                          hole_size_input,
-                         'input/directional_plan.csv')
+                         input_directional_plan_directory)
 
 if unit_system == 'field':
     results = input_data.pressure_drop_calculations_field_units(yield_stress_tao_y,

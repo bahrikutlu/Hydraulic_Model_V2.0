@@ -2,15 +2,18 @@ from utilities.utilities_for_input_processing import DiameterProfile, results_cs
 from utilities import column_names as columns
 import pandas as pd
 import numpy as np
-from bokeh.plotting import figure, output_file
+from bokeh.plotting import figure, output_file, save
 from bokeh.models import ColumnDataSource, HoverTool
 from minimum_curvature_method import mincurve
 from matplotlib import pyplot as plt
+from definitions import wellbore_schematic_image_directory, ecd_chart_directory, ecd_chart_zoomed_directory, \
+    pipe_pressure_drop_chart_directory, annular_pressure_drop_chart_directory, pump_pressure_chart_directory, \
+    tvd_verticalsec_chart_directory, input_directional_plan_directory, output_directional_directory, output_data_frame, \
+    output_raw_field_units
 
 
 def wellbore_schematic(drill_string, bottom_hole_assembly, casing_design, open_hole_size):
-    print("schematic done")
-    print("ttest")
+
     annulus_inner_diameter_profile = DiameterProfile(casing_design,drill_string,bottom_hole_assembly,open_hole_size)
     drill_string_outer_diameter_profile = DiameterProfile(casing_design,drill_string,bottom_hole_assembly,open_hole_size)
     drill_string_inner_diameter_profile = DiameterProfile(casing_design,drill_string,bottom_hole_assembly,open_hole_size)
@@ -41,12 +44,13 @@ def wellbore_schematic(drill_string, bottom_hole_assembly, casing_design, open_h
     plt.gca().invert_yaxis()
     plt.gcf().set_size_inches(2, 6, forward=True)
     plt.tick_params(labelsize=6, labelrotation=90)
-    plt.savefig('output/plots/wellbore_schematic.png')
+    plt.savefig(wellbore_schematic_image_directory)
+    plt.close()
 
 
 def ecd_profile_chart(result_array):  # plots a chart that shows measured depth vs ecd
-    array = results_csv_loader(result_array)
-    output_file("../output/charts/ecd.html")
+    array = np.genfromtxt(result_array, delimiter=',', skip_header=1)
+    output_file(ecd_chart_directory)
     lines_to_skip: int = 10
     measured_depth = array[lines_to_skip:, columns.names['composite_list_columns_md']]
     ecd = array[lines_to_skip:, columns.names['composite_list_columns_equivalent_circulating_density']]
@@ -56,12 +60,12 @@ def ecd_profile_chart(result_array):  # plots a chart that shows measured depth 
     ecd_chart.y_range.flipped = True
     ecd_chart.xaxis.axis_label = "ECD, ppg"
     ecd_chart.yaxis.axis_label = "MD, ft"
-    # show(ecd_chart)
+    save(ecd_chart)
 
 
 def ecd_profile_zoomed_chart(result_array):  # plots a chart that shows measured depth vs ecd zoomed to lateral
     array = results_csv_loader(result_array)
-    output_file("../output/charts/ecd_zoomed.html")
+    output_file(ecd_chart_zoomed_directory)
     lines_to_skip: int = 10
     inc = array[lines_to_skip:, columns.names['composite_list_columns_inc']]
     threshold = 70
@@ -70,17 +74,17 @@ def ecd_profile_zoomed_chart(result_array):  # plots a chart that shows measured
     measured_depth = array[inclination_horizontal:, columns.names['composite_list_columns_md']]
     ecd = array[inclination_horizontal:, columns.names['composite_list_columns_equivalent_circulating_density']]
     tool_tips = [("(x,y)", "(@x{1.11} ppg, @y ft)")]
-    ecd_chart = figure(plot_width=400, plot_height=400, tooltips=tool_tips, title="ECD Along the Wellbore (Lateral Zoom)")
-    ecd_chart.line(ecd, measured_depth, line_width=2)
-    ecd_chart.y_range.flipped = True
-    ecd_chart.xaxis.axis_label = "ECD, ppg"
-    ecd_chart.yaxis.axis_label = "MD, ft"
-    # show(ecd_chart)
+    ecd_chart_z = figure(plot_width=400, plot_height=400, tooltips=tool_tips, title="ECD Along the Wellbore (Lateral Zoom)")
+    ecd_chart_z.line(ecd, measured_depth, line_width=2)
+    ecd_chart_z.y_range.flipped = True
+    ecd_chart_z.xaxis.axis_label = "ECD, ppg"
+    ecd_chart_z.yaxis.axis_label = "MD, ft"
+    save(ecd_chart_z)
 
 
 def pipe_pressure_drop_chart(result_array):
     array = results_csv_loader(result_array)
-    output_file("../output/charts/drill_pipe_pressure_drop.html")
+    output_file(pipe_pressure_drop_chart_directory)
     lines_to_skip: int = 10
     measured_depth = array[lines_to_skip:, columns.names['composite_list_columns_md']]
     pipe_pressure_drop = array[lines_to_skip:, columns.names['composite_list_columns_cumulative_pipe_pressure_drop']]
@@ -90,12 +94,12 @@ def pipe_pressure_drop_chart(result_array):
     pipe_p_drop.y_range.flipped = True
     pipe_p_drop.xaxis.axis_label = "Pressure Drop, psi"
     pipe_p_drop.yaxis.axis_label = "MD, ft"
-    # show(pipe_p_drop)
+    save(pipe_p_drop)
 
 
 def annular_pressure_drop_chart(result_array):
     array = results_csv_loader(result_array)
-    output_file("../output/charts/annular_pressure_drop.html")
+    output_file(annular_pressure_drop_chart_directory)
     lines_to_skip: int = 10
     measured_depth = array[lines_to_skip:, columns.names['composite_list_columns_md']]
     annular_pressure_drop = array[lines_to_skip:, columns.names['composite_list_columns_cumulative_annular_pressure_drop']]
@@ -105,12 +109,12 @@ def annular_pressure_drop_chart(result_array):
     annular_p_drop.y_range.flipped = True
     annular_p_drop.xaxis.axis_label = "Pressure Drop, psi"
     annular_p_drop.yaxis.axis_label = "MD, ft"
-    # show(annular_p_drop)
+    save(annular_p_drop)
 
 
 def pump_pressure_chart(result_array):
     array = results_csv_loader(result_array)
-    output_file("../output/charts/pump_pressure.html")
+    output_file(pump_pressure_chart_directory)
     lines_to_skip: int = 10
     measured_depth = array[lines_to_skip:, columns.names['composite_list_columns_md']]
     pump_pressure_drop = array[lines_to_skip:, columns.names['composite_list_columns_pump_pressure']]
@@ -120,13 +124,13 @@ def pump_pressure_chart(result_array):
     annular_p_drop.y_range.flipped = True
     annular_p_drop.xaxis.axis_label = "Pump Pressure, psi"
     annular_p_drop.yaxis.axis_label = "MD, ft"
-    # show(annular_p_drop)
+    save(annular_p_drop)
 
 
 def tvd_vs_chart():
-    mincurve.generate_full_directional_plan("input/directional_plan.csv")
-    array = np.genfromtxt("output/directional_plan/directional_plan_processed.csv", delimiter=',', skip_header=1)
-    output_file("../output/charts/tvd_vs_distance.html")
+    mincurve.generate_full_directional_plan(input_directional_plan_directory)
+    array = np.genfromtxt(output_directional_directory, delimiter=',', skip_header=1)
+    output_file(tvd_verticalsec_chart_directory)
     lines_to_skip: int = 1
     tvd = array[lines_to_skip:, 3]
     distance = array[lines_to_skip:, 8]
@@ -152,8 +156,7 @@ def tvd_vs_chart():
     profile.y_range.flipped = True
     profile.xaxis.axis_label = "Closure Distance, ft"
     profile.yaxis.axis_label = "TVD, ft"
-    # show(profile)
-
+    save(profile)
 
 def data_frame_creator(result_array):
     array = results_csv_loader(result_array)
@@ -161,15 +164,17 @@ def data_frame_creator(result_array):
     length = array.shape
     row_count = length[0] +1
     df = pd.DataFrame(data = array, index=[np.arange(1,row_count)], columns=columns.dataframe_columns)
-    df.to_csv('output/calculation_results/output.csv')
+    df.to_csv(output_data_frame)
 
 
-file = 'output/calculation_results/raw/pressure_drop_field.csv'
-annular_pressure_drop_chart(file)
-pump_pressure_chart(file)
-ecd_profile_chart(file)
-ecd_profile_zoomed_chart(file)
-tvd_vs_chart()
+file = output_raw_field_units
+data_frame_creator(file)
+# annular_pressure_drop_chart(file)
+# pump_pressure_chart(file)
+# ecd_profile_chart(file)
+# ecd_profile_zoomed_chart(file)
+# pipe_pressure_drop_chart(file)
+# tvd_vs_chart()
 
 
 

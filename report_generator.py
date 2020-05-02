@@ -1,6 +1,7 @@
 from jinja2 import Environment, FileSystemLoader
 import pandas as pd
 from utilities import excel_input_import as inputs
+from definitions import output_template_html_directory, output_report_directory
 
 simulation_name = 'well2' # THIS IS THE ONLY VARIABLE THAT NEEDS TO BE CHANGED IN CODE
 importer = inputs.ImportFromExcel(simulation_name)
@@ -49,7 +50,7 @@ htmlreport = ReportCreator(casing_design,drill_string,bottom_hole_assembly, bit)
 
 
 env = Environment(loader=FileSystemLoader('.'))
-template = env.get_template("output/report_template/output_template.html")
+template = env.get_template(output_template_html_directory)
 casing = htmlreport.casing_table()
 stringbha = htmlreport.drillstring_and_bha_table()
 
@@ -60,7 +61,7 @@ template_vars = {"title": "Hydraulics Report",
 html_out = template.render(template_vars)
 
 
-with open("output/output_report/output.html", "w") as result_file:
+with open(output_report_directory, "w") as result_file:
     result_file.write(html_out)
 
 print("done")

@@ -1,11 +1,8 @@
-
-
-
-
 import datetime
 from model_engine.results_array_calculator import *
 from model_engine.rheological_model_parameters import*
 from model_engine.surface_bit_bha_pressure_drop import bit_pressure_drop_psi
+from definitions import input_directional_plan_directory, output_raw_field_units, output_data_frame
 
 np.set_printoptions(precision=5, suppress=True,threshold=sys.maxsize)
 
@@ -14,9 +11,9 @@ casing_design = list()
 drill_string = list()
 bottom_hole_assembly = list()
 drill_string.append([5, 4.276, 10000, 0])
-bottom_hole_assembly.append([6.75, 3.5, 10150, 10000])
+bottom_hole_assembly.append([6.75, 3.5, 10149, 10000])
 bit_nozzles= [16,16,16,13,13,13]
-
+bit_info = [8.5,2.7,10150,10149]
 
 shear_rate = [1022, 511, 340, 170, 10.22, 5.11]
 shear_stress = [54, 38, 31, 23, 8, 7]
@@ -59,13 +56,13 @@ mud_density = unit_converter_density_ppg_to_kgm3(mud_density_input)
 begin_time = datetime.datetime.now()
 
 print(bit_pressure_drop_psi(bit_nozzles,mud_density_input,flow_rate_q_input))
-test=ResultArray(drill_string, bottom_hole_assembly, casing_design, hole_size_input, 'input/directional_plan.csv')
+test=ResultArray(bit_info,drill_string, bottom_hole_assembly, casing_design, hole_size_input, input_directional_plan_directory)
 # results = test.pressure_drop_calculations_si_units(yield_stress_tao_y, consistency_index_k, fluid_behavior_index_m, flow_rate_q, mud_density, eccentricity_e,bit_nozzles)
 # results = test.pressure_drop_calculations_field_units(yield_stress_tao_y, consistency_index_k, fluid_behavior_index_m, flow_rate_q, mud_density, eccentricity_e, bit_nozzles)
 # results = test.final_results_field_units_with_surface_bit_mwd_pressure_drop(yield_stress_tao_y, consistency_index_k, fluid_behavior_index_m, flow_rate_q, mud_density, eccentricity_e,bit_nozzles)
 # results = test.show_inputs_in_field_units()
 # print(results)
 print(f"code run time {datetime.datetime.now() - begin_time}")
-# np.savetxt('output/pressure_drop_field.csv', results, delimiter=',', fmt='%1.3f')
-# data_frame_creator('output/pressure_drop_field.csv')
+# np.savetxt(output_raw_field_units, results, delimiter=',', fmt='%1.3f')
+# data_frame_creator(output_data_frame)
 
