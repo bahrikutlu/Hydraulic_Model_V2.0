@@ -5,41 +5,40 @@ np.seterr(divide='ignore', invalid='ignore')
 
 
 def minimum_curvature(md, inc, azi):
-    """Minimum curvature
+    # Minimum curvature
+    #
+    # Calculate TVD, northing, easting, and dogleg, using the minimum curvature
+    # method.
+    #
+    # This is the inner workhorse of the min_curve_method, and only implement the
+    # pure mathematics. As a user, you should probably use the min_curve_method
+    # function.
+    #
+    # This function considers md unitless, and assumes inc and azi are in
+    # radians.
+    #
+    # Parameters
+    # ----------
+    # md : array_like of float
+    #     measured depth
+    # inc : array_like of float
+    #     inclination in radians
+    # azi : array_like of float
+    #     azimuth in radians
+    #
+    # Returns
+    # -------
+    # tvd : array_like of float
+    #     true vertical depth
+    # northing : array_like of float
+    # easting : array_like of float
+    # dogleg : array_like of float
+    #
+    # Notes
+    # -----
+    # This function does not insert surface location
 
-    Calculate TVD, northing, easting, and dogleg, using the minimum curvature
-    method.
-
-    This is the inner workhorse of the min_curve_method, and only implement the
-    pure mathematics. As a user, you should probably use the min_curve_method
-    function.
-
-    This function considers md unitless, and assumes inc and azi are in
-    radians.
-
-    Parameters
-    ----------
-    md : array_like of float
-        measured depth
-    inc : array_like of float
-        inclination in radians
-    azi : array_like of float
-        azimuth in radians
-
-    Returns
-    -------
-    tvd : array_like of float
-        true vertical depth
-    northing : array_like of float
-    easting : array_like of float
-    dogleg : array_like of float
-
-    Notes
-    -----
-    This function does not insert surface location
-    """
     md, inc, azi = checkarrays(md, inc, azi)
-
 
     # extract upper and lower survey stations
     md_upper, md_lower = md[:-1], md[1:]
@@ -70,59 +69,59 @@ def minimum_curvature(md, inc, azi):
 
     return tvd, northing, easting, dogleg
 
+
 def min_curve_method(md, inc, azi, md_units='ft', norm_opt=0):
-    """
-    Calculate TVD using minimum curvature method.
 
-    This method uses angles from upper and lower end of survey interval to
-    calculate a curve that passes through both survey points. This curve is
-    smoothed by use of the ratio factor defined by the tortuosity or dogleg
-    of the wellpath.
-
-    Formula
-    -------
-    dls = arccos(cos(inc_lower - inc_upper) - sin(inc_upper) * sin(inc_lower) * (1 - cos(azi_lower - azi_upper)))
-    rf = 2 / dls * (tan(dls/2))
-    northing = sum((md_lower - md_upper) * (sin(inc_upper) * cos(azi_upper) + sin(inc_lower) * cos(azi_lower) / 2) * cf)
-    easting = sum((md_lower - md_upper) *(sin(inc_upper) * sin(azi_upper) + sin(inc_lower) * sin(azi_lower) / 2) * cf)
-    tvd = sum((md_lower - md_upper) * (cos(inc_lower) + cos(inc_upper) / 2) * cf)
-
-    where:
-    dls: dog leg severity (degrees)
-    rf: ratio factor (radians)
-    md_upper: upper survey station depth MD
-    md_lower: lower survey station depth MD
-    inc_upper: upper survey station inclination in degrees
-    inc_lower: lower survey station inclination in degrees
-    azi_upper: upper survey station azimuth in degrees
-    azi_lower: lower survey station azimuth in degrees
-
-    Parameters
-    ----------
-    md: float, measured depth in m or ft
-    inc: float, well deviation in degrees
-    azi: float, well azimuth in degrees
-    md_units: str, measured depth units in m or ft
-        used for dogleg severity calculation
-    norm_opt: float, dogleg normalisation value,
-        if passed will override md_units
-
-    Returns
-    -------
-    Deviation converted to TVD, easting, northing
-        tvd in m,
-        northing in m,
-        easting in m
-    Dogleg severity
-        dls: dogleg severity angle in degrees per normalisation value
-            (normalisation value is deg/100ft, deg/30m or deg/<norm_opt>)
-
-    Notes
-    -----
-    Return units are in metres, regardless of input.
-    The user must convert to feet if required.
-
-    """
+    # Calculate TVD using minimum curvature method.
+    #
+    # This method uses angles from upper and lower end of survey interval to
+    # calculate a curve that passes through both survey points. This curve is
+    # smoothed by use of the ratio factor defined by the tortuosity or dogleg
+    # of the wellpath.
+    #
+    # Formula
+    # -------
+    # dls = arccos(cos(inc_lower - inc_upper) - sin(inc_upper) * sin(inc_lower) * (1 - cos(azi_lower - azi_upper)))
+    # rf = 2 / dls * (tan(dls/2))
+    # northing = sum((md_lower - md_upper) * (sin(inc_upper) * cos(azi_upper) + sin(inc_lower) * cos(azi_lower) / 2) * cf)
+    # easting = sum((md_lower - md_upper) *(sin(inc_upper) * sin(azi_upper) + sin(inc_lower) * sin(azi_lower) / 2) * cf)
+    # tvd = sum((md_lower - md_upper) * (cos(inc_lower) + cos(inc_upper) / 2) * cf)
+    #
+    # where:
+    # dls: dog leg severity (degrees)
+    # rf: ratio factor (radians)
+    # md_upper: upper survey station depth MD
+    # md_lower: lower survey station depth MD
+    # inc_upper: upper survey station inclination in degrees
+    # inc_lower: lower survey station inclination in degrees
+    # azi_upper: upper survey station azimuth in degrees
+    # azi_lower: lower survey station azimuth in degrees
+    #
+    # Parameters
+    # ----------
+    # md: float, measured depth in m or ft
+    # inc: float, well deviation in degrees
+    # azi: float, well azimuth in degrees
+    # md_units: str, measured depth units in m or ft
+    #     used for dogleg severity calculation
+    # norm_opt: float, dogleg normalisation value,
+    #     if passed will override md_units
+    #
+    # Returns
+    # -------
+    # Deviation converted to TVD, easting, northing
+    #     tvd in m,
+    #     northing in m,
+    #     easting in m
+    # Dogleg severity
+    #     dls: dogleg severity angle in degrees per normalisation value
+    #         (normalisation value is deg/100ft, deg/30m or deg/<norm_opt>)
+    #
+    # Notes
+    # -----
+    # Return units are in metres, regardless of input.
+    # The user must convert to feet if required.
+    #
 
     # get units and normalising for dls
     try:
@@ -167,7 +166,7 @@ def min_curve_method(md, inc, azi, md_units='ft', norm_opt=0):
         dls = dl * (norm / md_diff)
         dls = np.insert(dls, 0, 0)
 
-    results=np.column_stack((tvd,northing,easting,dls))
+    results= np.column_stack((tvd, northing, easting, dls))
 
     return results
 
@@ -179,7 +178,7 @@ def csv_loader(plan):
 
 # this is called in the WellTrajectory class
 def generate_full_directional_plan(input_plan_csv, vertical_section_plane=0):
-    md_inc_azi = np.genfromtxt(input_plan_csv, delimiter=',', skip_header=1, usecols=(0,1,2))
+    md_inc_azi = np.genfromtxt(input_plan_csv, delimiter=',', skip_header=1, usecols=(0, 1, 2))
     md = md_inc_azi[:, 0]
     inc = md_inc_azi[:, 1]
     azi = md_inc_azi[:, 2]
@@ -195,10 +194,12 @@ def generate_full_directional_plan(input_plan_csv, vertical_section_plane=0):
         closure_azimuth = 180 + closure_azimuth_pre
     elif 270<= vertical_section_plane <360:
         closure_azimuth = 360 + closure_azimuth_pre
-    closure_azimuth[np.isnan(closure_azimuth)]=0 #replaces nan values to 0. nan values come from the division to zero in previous steps
+    # replaces nan values to 0. nan values come from the division to zero in previous steps
+    closure_azimuth[np.isnan(closure_azimuth)]=0
     vert_section = closure_distance * np.cos(np.deg2rad(closure_azimuth-vertical_section_plane))
-    header = ["Measured Depth", "Inclination", "Azimuth", "TVD", "Northing","Easting", "Dogleg Severity", "Closure Azimuth", "Closure Distance", "Vertical Section"]
-    results = np.column_stack((md_inc_azi,tvd_northing_easting_dls,closure_azimuth,closure_distance,vert_section))
+    header = ["Measured Depth", "Inclination", "Azimuth", "TVD", "Northing","Easting", "Dogleg Severity",
+              "Closure Azimuth", "Closure Distance", "Vertical Section"]
+    results = np.column_stack((md_inc_azi, tvd_northing_easting_dls, closure_azimuth, closure_distance, vert_section))
     results = pd.DataFrame(data=results, columns=header)
     results.to_csv(output_directional_directory, index=False)
 

@@ -15,7 +15,6 @@ class ImportFromExcel:
         self.rheology = list()
         self.string = list()
         self.bit_data = list()
-        # self.close =
 
     def all_casing_strings(self):
         for column in range(2, 12):

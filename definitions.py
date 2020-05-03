@@ -29,6 +29,7 @@ pipe_pressure_drop_chart_directory = os.path.join(root_dir, Path('output/charts/
 annular_pressure_drop_chart_directory = os.path.join(root_dir, Path('output/charts/annular_pressure_drop.html'))
 pump_pressure_chart_directory = os.path.join(root_dir, Path('output/charts/pump_pressure.html'))
 tvd_verticalsec_chart_directory = os.path.join(root_dir, Path('output/charts/tvd_vs_distance.html'))
+pressure_by_component = os.path.join(root_dir, Path('output/charts/pressure_by_component.html'))
 
 
 

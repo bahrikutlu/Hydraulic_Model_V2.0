@@ -5,32 +5,47 @@
     <title>{{ title }}</title>
 </head>
 <body>
-    <h1>ECD Model</h1>
+    <h1>Hydraulics Report</h1>
     
-    <h2>Casing Summary:</h2>
-    {{ casing_table }}
+    <h2>Casing Summary</h2>
+    {{casing_table}}
     
-    <h2>Drill String and Bottom Hole Assembly:</h2>
-    {{ drill_string_and_bha_table }}
+    <h2>Drill String and Bottom Hole Assembly</h2>
+    {{drill_string_and_bha_table}}
 
-    <h2>Bit Table:</h2>
+    <h2>Bit Nozzles</h2>
+    {{bit_table}}
+
+    <h2>Drilling Fluid Properties</h2>
+    <h3>Viscometer Readings</h3>
+    {{viscometer_reading}}
+    <h3>Mud Rheological Properties</h3>
+    {{fluid_properties}}
+
+    <h2>Wellbore Schematic</h2>
+	<img src="{{wellboreschematic}}">
+
+    <h2>Fluid Properties</h2>
+	<img src="{{flowcurve}}">
 
 
-    <h2>Wellbore Schematic:</h2>
-    <img src="plots/wellbore_schematic.png">
+    <h2>Wellbore Profile</h2>
+    {% include 'output/charts/tvd_vs_distance.html' ignore missing %}
 
-    <h2>Fluid Properties:</h2>
-    <img src="plots/flow_curve.png">
+    <h2>Results</h2>
+    <h3>Pressure Drop by Component</h3>
+    {{summary_table}}
+	{% include 'output/charts/pressure_by_component.html' ignore missing %}
 
-    <h2>Wellbore Profile:</h2>
-    {% include 'output/charts/tvd_vs_distance.html' %}
+    <h3>ECD</h3>
+    {{ecd_table}}    
 
     <h2>Charts:</h2>
-    {% include 'output/charts/ecd.html' %}
-    {% include 'output/charts/ecd_zoomed.html' %}
-    {% include 'output/charts/annular_pressure_drop.html' %}
-    {% include 'output/charts/drill_pipe_pressure_drop.html' %}
-    {% include 'output/charts/pump_pressure.html' %}
+    {% include 'output/charts/ecd.html' ignore missing %}
+    {% include 'output/charts/ecd_zoomed.html' ignore missing %}
+    {% include 'output/charts/annular_pressure_drop.html' ignore missing %}
+    {% include 'output/charts/drill_pipe_pressure_drop.html' ignore missing %}
+    {% include 'output/charts/pump_pressure.html' ignore missing %}
 
 </body>
 </html>

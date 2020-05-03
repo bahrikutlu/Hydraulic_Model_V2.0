@@ -14,7 +14,8 @@ np.set_printoptions(precision=5, suppress=True, threshold=sys.maxsize)
 
 
 class ResultArray:
-    def __init__(self, bit_info, drill_string, bottom_hole_assembly, casing_design, hole_size_input, well_trajectory_file):
+    def __init__(self, bit_info, drill_string, bottom_hole_assembly,
+                 casing_design, hole_size_input, well_trajectory_file):
         self.bit = bit_info
         self.drillstring = drill_string
         self.bha = bottom_hole_assembly
@@ -77,12 +78,11 @@ class ResultArray:
         results_si_units = np.c_[results_si_units, np.zeros(row_count), np.zeros(row_count)]
         row_index = 0
         for row in self.show_inputs_in_si_units():
-            pipe_p_drop = pressure_drop_calculator(yield_stress_tao_y, consistency_index_k,
-                                                            fluid_behavior_index_m, flow_rate_q, mud_density,
-                                                            eccentricity_e, 'pipe',
-                                                            row[columns.names['composite_list_columns_annulus_diameter']],
-                                                            row[columns.names['composite_list_columns_string_od']],
-                                                            row[columns.names['composite_list_columns_string_id']])
+            pipe_p_drop = pressure_drop_calculator(yield_stress_tao_y, consistency_index_k,fluid_behavior_index_m,
+                                                   flow_rate_q, mud_density,eccentricity_e, 'pipe',
+                                                   row[columns.names['composite_list_columns_annulus_diameter']],
+                                                   row[columns.names['composite_list_columns_string_od']],
+                                                   row[columns.names['composite_list_columns_string_id']])
             if row_index == 0:
                 p_drop_pipe_si_units = misc_parasitic_losses(nozzle_list, mud_density, flow_rate_q)
             else:
@@ -116,12 +116,10 @@ class ResultArray:
         pressure_drops = np.copy(
             self.pressure_drop_calculations_si_units(yield_stress_tao_y, consistency_index_k, fluid_behavior_index_m,
                                                      flow_rate_q, mud_density, eccentricity_e, nozzle_list))
-        equivalent_circulating_density = pressure_drops[:,
-                                         columns.names['composite_list_columns_equivalent_circulating_density']]
+        equivalent_circulating_density = pressure_drops[:,columns.names['composite_list_columns_equivalent_circulating_density']]
         equivalent_circulating_density = unit_converter_density_kgm3_to_ppg(equivalent_circulating_density)
         equivalent_circulating_density = equivalent_circulating_density.reshape(-1, 1)
-        pressure_drops = pressure_drops[:, columns.names['composite_list_columns_pipe_pressure_drop']:(
-                    columns.names['composite_list_columns_pump_pressure'] + 1)]
+        pressure_drops = pressure_drops[:, columns.names['composite_list_columns_pipe_pressure_drop']:(columns.names['composite_list_columns_pump_pressure'] + 1)]
         pressure_drops = unit_converter_pascalovermeter_to_psioverft(pressure_drops)
 
         results_field_units = np.concatenate([results_field_units, pressure_drops, equivalent_circulating_density],
@@ -132,37 +130,10 @@ class ResultArray:
         data_frame_creator(file_name_and_directory)
         return results_field_units
 
-    # def final_results_si_units_with_surface_bit_mwd_pressure_drop(self,yield_stress_tao_y, consistency_index_k, fluid_behavior_index_m,flow_rate_q, mud_density, eccentricity_e ,bit_nozzles):
-    #     output = self.pressure_drop_calculations_si_units(yield_stress_tao_y, consistency_index_k, fluid_behavior_index_m,flow_rate_q, mud_density, eccentricity_e)
-    #     shape_of_array = output.shape
-    #     row_count = shape_of_array[0]
-    #     mud_density_ppg = unit_converter_density_kgm3_to_ppg(mud_density)
-    #     flow_rate_gpm = unit_converter_flow_rate_m3persec_to_gpm(flow_rate_q)
-    #     first_row_of_pump_pressure = output[0][columns.names['composite_list_columns_pump_pressure']]
-    #     bit_pressure_drop = unit_converter_psi_to_pascal(bit_p_drop(bit_nozzles,mud_density_ppg,flow_rate_gpm))
-    #     first_row_of_pump_pressure += bit_pressure_drop
-    #     return output
-    #
-    # def final_results_field_units_with_surface_bit_mwd_pressure_drop(self,yield_stress_tao_y, consistency_index_k, fluid_behavior_index_m,flow_rate_q, mud_density, eccentricity_e ,bit_nozzles):
-    #     output = self.pressure_drop_calculations_field_units(yield_stress_tao_y, consistency_index_k, fluid_behavior_index_m,flow_rate_q, mud_density, eccentricity_e)
-    #     shape_of_array = output.shape
-    #     row_count = shape_of_array[0]
-    #     mud_density_ppg = unit_converter_density_kgm3_to_ppg(mud_density)
-    #     flow_rate_gpm = unit_converter_flow_rate_m3persec_to_gpm(flow_rate_q)
-    #     first_row_of_pump_pressure = output[0,columns.names['composite_list_columns_pump_pressure']]
-    #     bit_pressure_drop = bit_p_drop(bit_nozzles,mud_density_ppg,flow_rate_gpm)
-    #     first_row_of_pump_pressure = bit_pressure_drop
-    #     output[0,0] = bit_pressure_drop
-    #     return output
-
 
 def cumulative_pressure_drop_calculator(results_array, mud_density, flow_rate_q, bit_nozzles):
     extract_pipe_pressure_drop = results_array[:, [columns.names['composite_list_columns_pipe_pressure_drop']]]
     extract_annular_pressure_drop = results_array[:, [columns.names['composite_list_columns_annulus_pressure_drop']]]
-
-    # mud_density_ppg = unit_converter_density_kgm3_to_ppg(mud_density)
-    # flow_rate_gpm = unit_converter_flow_rate_m3persec_to_gpm(flow_rate_q)
-    # extract_pipe_pressure_drop[0] = unit_converter_psi_to_pascal(bit_p_drop(bit_nozzles, mud_density_ppg, flow_rate_gpm))
 
     cum_sum_pipe = np.cumsum(extract_pipe_pressure_drop)
     cum_sum_annulus = np.cumsum(extract_annular_pressure_drop)

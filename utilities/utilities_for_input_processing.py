@@ -40,17 +40,6 @@ class WellTrajectory:
         return f(measured_depth)
 
 
-# well_trajectory = WellTrajectory('input/directional_plan.csv')
-# print(well_trajectory.filename)
-# print(well_trajectory.load_csv)
-# print(well_trajectory.measured_depths)
-# print(well_trajectory.true_vertical_depths)
-# print(well_trajectory.tvd_finder(9700))
-# print(well_trajectory.azimuth_finder(9700))
-# print(well_trajectory.closure_distance_finder(15000))
-
-
-
 def bit_depth_finder(drill_string, bottom_hole_assembly):
     entire_string = drill_string+bottom_hole_assembly
     bit_depth = 0
@@ -67,20 +56,20 @@ class DiameterProfile:
         self.openholesize = open_hole_size
         self.drillstring = drill_string
         self.bha = bottom_hole_assembly
-        # self.bit_info = bit
         self.entirestring = self.drillstring + self.bha
-        #+ self.bit_info
 
     def annulus_inner_diameter_profile_calculator(self):
         # sorts the list of casing strings by third column (casing set depth)
-        self.casingdesign = sorted(self.casingdesign, key=itemgetter(columns.string_input_columns['input_list_bottom_depth']))
+        self.casingdesign = sorted(self.casingdesign,
+                                   key=itemgetter(columns.string_input_columns['input_list_bottom_depth']))
         # logic needs to be added for error handling in case two strings are entered with top depth of zero
         well_inner_diameter_profile = []
         casing_top_depth_list = []
         for strings in self.casingdesign:
             inner_diameter = columns.string_input_columns['input_list_inner_diameter']
             diameter = inner_diameter
-            well_inner_diameter_profile.append([strings[diameter], strings[columns.string_input_columns['input_list_bottom_depth']]])
+            well_inner_diameter_profile.append([strings[diameter],
+                                                strings[columns.string_input_columns['input_list_bottom_depth']]])
             casing_top_depth_list.append(strings[columns.string_input_columns['input_list_top_depth']])
         i = 0
         for top_depth in casing_top_depth_list:
@@ -95,18 +84,14 @@ class DiameterProfile:
                                                    well_inner_diameter_profile[i - 1][1] + 1])
             i += 2
 
-        #append the open hole size, starting depth
-        well_inner_diameter_profile.append([self.openholesize,self.casingdesign[len(self.casingdesign)-1][2]+1])
-        #append the open hole size, final depth
-        well_inner_diameter_profile.append([self.openholesize,self.entirestring[len(self.entirestring)-1][2]])
-
-        #insert the hole size and td to the end
-        #add the previous line as hloe size and depth+1
+        # append the open hole size, starting depth
+        well_inner_diameter_profile.append([self.openholesize, self.casingdesign[len(self.casingdesign)-1][2]+1])
+        # append the open hole size, final depth
+        well_inner_diameter_profile.append([self.openholesize, self.entirestring[len(self.entirestring)-1][2]])
 
         return well_inner_diameter_profile
 
     def annulus_id_finder_with_depth_input(self, depth):
-        # well_inner_diameter_profile = annulus_diameter_profile_calculator(casing_design)
         inner_diam_list = []
         depth_list = []
         for item in self.annulus_inner_diameter_profile_calculator():
@@ -133,29 +118,26 @@ class DiameterProfile:
         entire_string = sorted(entire_string, key=itemgetter(columns.string_input_columns['input_list_top_depth']))
         drill_string_outer_diameter_profile = []
         drill_string_top_depth_list = []
-        # columns.string_input_columns['input_list_outer_diameter'] = input_list_outer_diameter
         for tool in entire_string:
-            drill_string_outer_diameter_profile.append([tool[columns.string_input_columns['input_list_outer_diameter']
-], tool[columns.string_input_columns['input_list_bottom_depth']]])
+            drill_string_outer_diameter_profile.append([tool[columns.string_input_columns['input_list_outer_diameter']],
+                                                        tool[columns.string_input_columns['input_list_bottom_depth']]])
             drill_string_top_depth_list.append(tool[columns.string_input_columns['input_list_top_depth']])
         i = 0
         for top_depth in drill_string_top_depth_list:
             if top_depth > 0:
                 drill_string_outer_diameter_profile[i - 1][1] = top_depth
             i += 1
-        drill_string_outer_diameter_profile.insert(0, [entire_string[0][columns.string_input_columns['input_list_outer_diameter']
-], 0])
+        drill_string_outer_diameter_profile.insert(0, [entire_string[0][columns.string_input_columns['input_list_outer_diameter']], 0])
 
         i = 2
         while i < len(drill_string_outer_diameter_profile):
             drill_string_outer_diameter_profile.insert(i, [drill_string_outer_diameter_profile[i][0],
-                                                   drill_string_outer_diameter_profile[i - 1][1] + 1])
+                                                           drill_string_outer_diameter_profile[i - 1][1] + 1])
             i += 2
 
         return drill_string_outer_diameter_profile
 
     def drill_string_od_finder_with_depth_input(self, depth):
-        # well_inner_diameter_profile = annulus_diameter_profile_calculator(casing_design)
         outer_diam_list = []
         depth_list = []
         for item in self.drill_string_outer_diameter_profile_calculator():
@@ -189,7 +171,8 @@ class DiameterProfile:
         drill_string_inner_diameter_profile = []
         drill_string_top_depth_list = []
         for tool in entire_string:
-            drill_string_inner_diameter_profile.append([tool[columns.string_input_columns['input_list_inner_diameter']], tool[columns.string_input_columns['input_list_bottom_depth']]])
+            drill_string_inner_diameter_profile.append([tool[columns.string_input_columns['input_list_inner_diameter']],
+                                                        tool[columns.string_input_columns['input_list_bottom_depth']]])
             drill_string_top_depth_list.append(tool[columns.string_input_columns['input_list_top_depth']])
         i = 0
         for top_depth in drill_string_top_depth_list:
@@ -201,13 +184,12 @@ class DiameterProfile:
         i = 2
         while i < len(drill_string_inner_diameter_profile):
             drill_string_inner_diameter_profile.insert(i, [drill_string_inner_diameter_profile[i][0],
-                                                   drill_string_inner_diameter_profile[i - 1][1] + 1])
+                                                           drill_string_inner_diameter_profile[i - 1][1] + 1])
             i += 2
 
         return drill_string_inner_diameter_profile
 
     def drill_string_id_finder_with_depth_input(self, depth):
-        # well_inner_diameter_profile = annulus_diameter_profile_calculator(casing_design)
         inner_diam_list = []
         depth_list = []
         for item in self.drill_string_inner_diameter_profile_calculator():

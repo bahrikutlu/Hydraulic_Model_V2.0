@@ -1,9 +1,5 @@
 from scipy.optimize import curve_fit
 from matplotlib import pyplot as plt
-
-shear_rate = [1022, 511, 340, 170, 10.22, 5.11]
-shear_stress = [54, 38, 31, 23, 8, 7]
-fluid_type = "PL"
 from definitions import flow_curve_image_directory
 
 
@@ -40,8 +36,3 @@ def fluid_properties_plotter(shear_rate, shear_stress, fluid_type):
     plt.legend()
     plt.savefig(flow_curve_image_directory)
     plt.close()
-
-
-# USE FOLLOWING TO CALL THE FUNCTIONS
-print(rheological_parameters(shear_rate, shear_stress, fluid_type))
-fluid_properties_plotter(shear_rate, shear_stress, fluid_type)

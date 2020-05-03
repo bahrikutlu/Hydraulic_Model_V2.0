@@ -11,6 +11,7 @@ names = {'composite_list_columns_md': 0,
          'composite_list_columns_pump_pressure': 10,
          'composite_list_columns_equivalent_circulating_density': 11}
 
+# Note: the column names in dataframe columns is used in the report_generator.py.
 dataframe_columns = ['MD', 'INC', 'TVD', 'Pipe P Drop', 'Annular P Drop', 'Pump Pressure', 'ECD']
 
 string_input_columns = {'input_list_outer_diameter': 0,
