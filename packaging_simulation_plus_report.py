@@ -4,6 +4,7 @@ from utilities.excel_input_import import ImportFromExcel
 from utilities.charts_and_schematics import wellbore_schematic, annular_pressure_drop_chart, pump_pressure_chart, \
     ecd_profile_chart, ecd_profile_zoomed_chart, pipe_pressure_drop_chart, tvd_vs_chart, pressure_pie_chart
 from utilities.unit_converters import *
+from utilities.utilities_for_input_processing import create_folders
 import datetime
 from model_engine.results_array_calculator import ResultArray
 from definitions import input_directional_plan_directory, output_raw_field_units
@@ -13,6 +14,10 @@ def simulation_and_reporting_package(sheet_name):
     begin_time = datetime.datetime.now()
 
     print("Simulation Started")
+
+    create_folders()
+
+    print("Necessary folders are Created if they didn't already exist")
 
     # inputs are pulled from the input.xlsx excel file located in the input folder.
     # change the simulation name variable below to the name of the sheet in excel if

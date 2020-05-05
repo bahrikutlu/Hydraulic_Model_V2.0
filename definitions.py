@@ -18,9 +18,17 @@ output_directional_directory = os.path.join(root_dir, Path('output/directional_p
 wellbore_schematic_image_directory = os.path.join(root_dir, Path('output/plots/wellbore_schematic.png'))
 flow_curve_image_directory = os.path.join(root_dir, Path('output/plots/flow_curve.png'))
 
+# output folders
+raw_results = os.path.join(root_dir, Path('output/calculation_results/raw')) #use with makedirs
+charts_folder = os.path.join(root_dir, Path('output/charts'))
+directional_plan_folder = os.path.join(root_dir, Path('output/directional_plan'))
+output_report = os.path.join(root_dir, Path('output/output_report'))
+output_plots = os.path.join(root_dir, Path('output/plots'))
+
 # output report
-output_template_html_directory = "output/report_template/output_template.html"
+output_template_html_directory = "input/report_template/output_template.html"
 output_report_directory = os.path.join(root_dir, Path('output/output_report/output.html'))
+cssforstyling = os.path.join(root_dir, Path('input/report_template/styles.css'))
 
 # interactive charts
 ecd_chart_directory = os.path.join(root_dir, Path('output/charts/ecd.html'))

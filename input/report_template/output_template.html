@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{cssforstyling}}">
+    <title>{{ title }}</title>
+</head>
+<body>
+
+<div class="grid-container">
+
+  <div class="header">
+    <h1>Hydraulics Simulation Report</h1>
+      <p>Simulation algorithm, back end and front end of the application are</p>
+      <p>designed by <a href="https://www.linkedin.com/in/bahrikutlu" target="_blank">Bahri Kutlu</a></p>
+      <p>Mobile: (918) 728 0026</p>
+  </div>
+
+  <div class="content">
+
+    <h2>Casing Summary</h2>
+    {{casing_table}}
+
+    <h2>Drill String and Bottom Hole Assembly</h2>
+    {{drill_string_and_bha_table}}
+
+    <h3>Bit Nozzles</h3>
+    {{bit_table}}
+
+<!--    <p style="page-break-after: always;">&nbsp;</p>-->
+
+    <h2>Drilling Fluid Properties</h2>
+    <h3>Viscometer Readings</h3>
+    {{viscometer_reading}}
+
+    <h3>Mud Rheological Properties</h3>
+    {{fluid_properties}}
+
+    <h3>Rheogram</h3>
+	<img src="{{flowcurve}}" alt="flow curve" class="images">
+
+    <h2>Wellbore Schematic</h2>
+    <img src="{{wellboreschematic}}" alt="wellbore schematic" class="images">
+
+<!--    <p style="page-break-after: always;">&nbsp;</p>-->
+
+    <h2>Wellbore Profile</h2>
+    {% include 'output/charts/tvd_vs_distance.html' ignore missing %}
+
+<!--    <p style="page-break-after: always;">&nbsp;</p>-->
+
+    <h2>Results</h2>
+    <h3>Pressure Drop by Component</h3>
+    {{summary_table}}
+	{% include 'output/charts/pressure_by_component.html' ignore missing %}
+
+<!--    <p style="page-break-after: always;">&nbsp;</p>-->
+
+    <h3>Equivalent Circulating Density, ECD</h3>
+    {{ecd_table}}
+
+    <h2>Charts</h2>
+
+    {% include 'output/charts/ecd.html' ignore missing %}
+
+    {% include 'output/charts/ecd_zoomed.html' ignore missing %}
+
+<!--    <p style="page-break-after: always;">&nbsp;</p>-->
+
+    {% include 'output/charts/annular_pressure_drop.html' ignore missing %}
+    {% include 'output/charts/drill_pipe_pressure_drop.html' ignore missing %}
+
+<!--    <p style="page-break-after: always;">&nbsp;</p>-->
+
+    {% include 'output/charts/pump_pressure.html' ignore missing %}
+    </div>
+
+  <div class="footer">
+    <div class="footer_columns">
+      <div>
+          <h3>Feedback is Appreciated</h3>
+          <p><a href="mailto:bahrikutl@gmail.com?Subject=Hi%20Bahri%20Simulation%20Feedback" target="_top">Send e-mail</a></p>
+          <p>Mobile: (918) 728 0026</p>
+      </div>
+      <div>
+        <h3>Online Presence</h3>
+        <p><a href="https://www.linkedin.com/in/bahrikutlu" target="_blank" rel="nofollow">LinkedIn</a></p>
+        <p><a href="https://scholar.google.com/citations?user=ugep5Z0AAAAJ&hl=en" target="_blank" rel="nofollow">Google Scholar</a></p>
+        <p><a href="https://www.researchgate.net/profile/Bahri_Kutlu" target="_blank" rel="nofollow">Research Gate</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

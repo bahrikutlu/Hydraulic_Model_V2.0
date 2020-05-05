@@ -1,0 +1,92 @@
+body {
+  font-family: Georgia, sans-serif;
+  font-size: 1rem;
+  color: #333333;
+  line-height: 1.5rem;
+  background-color: darkgray;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 640px;
+  /*header 150px, content auto, footer 200px*/
+  grid-template-rows: auto auto auto;
+  gap: 20px 20px;
+  grid-template-areas: "header" "content" "footer";
+}
+
+
+.header { grid-area: header;
+  background-color: white;
+  padding-left: 10px;
+  text-align: center;
+  border: 2px solid black;
+  border-radius: 15px;
+
+}
+
+.content { grid-area: content;
+  /*spreads tables across*/
+  /*display: grid;*/
+  background-color: white;
+  padding-left: 10px;
+  text-align: center;
+  border: 2px solid black;
+  border-radius: 15px;
+
+}
+
+.footer { grid-area: footer;
+  text-align: center;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 15px;
+}
+
+.footer_columns {
+  display: grid;
+  grid-template-columns: 320px 320px;
+}
+
+/*styling the tables*/
+table {
+  border: hidden;
+  border-collapse: collapse;
+  width: 50%;
+  text-align: center;
+  margin-left:auto;
+  margin-right:auto;
+
+}
+
+/*styling the tables*/
+th, td {
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+  text-align: center;
+
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+a {
+  color: #333333;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

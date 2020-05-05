@@ -8,7 +8,7 @@ from model_engine.surface_bit_bha_pressure_drop import tfa_calculator, surface_p
     mud_motor_pressure_drop, bit_pressure_drop_psi
 from utilities import excel_input_import as inputs
 from definitions import output_template_html_directory, output_report_directory, wellbore_schematic_image_directory, \
-    flow_curve_image_directory, output_data_frame
+    flow_curve_image_directory, output_data_frame, cssforstyling
 
 simulation_name = 'well2' # THIS IS THE ONLY VARIABLE THAT NEEDS TO BE CHANGED IN CODE
 importer = inputs.ImportFromExcel(simulation_name)
@@ -163,7 +163,8 @@ def html_report_creator(casing_design, drill_string, bottom_hole_assembly, bit, 
                      "viscometer_reading": viscreading.to_html(header=False),
                      "summary_table": sumtable.to_html(header=True, index=True),
                      "ecd_table": ecdtable.to_html(header=True, index=True),
-                     "fluid_properties": fluidproperties.to_html(header=True, index=False)
+                     "fluid_properties": fluidproperties.to_html(header=True, index=False),
+                     "cssforstyling": cssforstyling
                      }
 
     env = Environment(loader=FileSystemLoader('.'))

@@ -1,8 +1,10 @@
+import os
 from operator import itemgetter
 import numpy as np
 from scipy import interpolate
 
-from definitions import output_directional_directory
+from definitions import output_directional_directory, raw_results, charts_folder, directional_plan_folder, \
+    output_report, output_plots
 from utilities import column_names as columns
 from minimum_curvature_method import mincurve
 
@@ -11,6 +13,12 @@ def results_csv_loader(pressure_drop_csv):
     array = np.genfromtxt(pressure_drop_csv, delimiter=',')
     return array
 
+
+def create_folders():
+    folder_list = [raw_results, charts_folder, directional_plan_folder, output_report, output_plots]
+    for folder in folder_list:
+        if not os.path.exists(folder):
+            os.makedirs(folder)
 
 class WellTrajectory:
     def __init__(self, file_name):
@@ -202,3 +210,4 @@ class DiameterProfile:
 
 
 
+create_folders()

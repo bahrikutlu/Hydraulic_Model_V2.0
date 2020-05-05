@@ -31,8 +31,11 @@ def fluid_properties_plotter(shear_rate, shear_stress, fluid_type):
     if fluid_type == "YPL":
         rheology = rheological_parameters(shear_rate, shear_stress, fluid_type)
         flow_curve = rheology[0] + rheology[1]*(shear_rate ** rheology[2])
+    plt.figure(figsize=(4,4))
     plt.plot(shear_rate, shear_stress, 'o', color='red', label="data")
     plt.plot(shear_rate, flow_curve, '--', color='blue', label="optimized data")
     plt.legend()
-    plt.savefig(flow_curve_image_directory)
+    plt.xlabel("Shear Rate (1/s)")
+    plt.ylabel("Shear Stress (lbf/100ft2)")
+    plt.savefig(flow_curve_image_directory, bbox_inches='tight')
     plt.close()
