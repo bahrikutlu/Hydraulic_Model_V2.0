@@ -184,11 +184,11 @@ def fann_friction_factor(generalized_reynolds_number,
     if generalized_reynolds_number < transition_reynolds_number:
         return f_laminar
     elif generalized_reynolds_number < turbulent_reynolds_number:
-        return f_laminar # this method is reasonable however, it can be improved in the future
+        return f_laminar  # this method is reasonable however, it can be improved in the future
     else:
         iteration_difference = 1
         f_initial = f_laminar
-        while iteration_difference > 0.02: # multiply the number with 100 to get percent difference
+        while iteration_difference > 0.02:  # multiply the number with 100 to get percent difference
             f_iteration = (4 / (generalized_flow_behavior_index_n ** 0.75) * (math.log((generalized_reynolds_number * f_initial ** (1 - generalized_flow_behavior_index_n / 2)), 10)) - 0.4 / (generalized_flow_behavior_index_n ** 1.2) + 4 * (generalized_flow_behavior_index_n ** 0.25) * math.log((4 * (geometric_parameter_a + geometric_parameter_b * generalized_flow_behavior_index_n)) / (3 * generalized_flow_behavior_index_n + 1),10)) ** -2
             iteration_difference = abs((f_iteration - f_initial)/f_laminar)
             f_initial = f_iteration

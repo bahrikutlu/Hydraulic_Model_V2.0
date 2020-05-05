@@ -5,7 +5,7 @@ from definitions import output_raw_si_units, output_raw_field_units
 from utilities.unit_converters import *
 from utilities import column_names as columns
 from model_engine.surface_bit_bha_pressure_drop import misc_parasitic_losses
-from utilities.utilities_for_input_processing import WellTrajectory, bit_depth_finder, DiameterProfile
+from utilities.utilities_for_input_processing import WellTrajectory, bit_depth_finder, DiameterProfile, step_calculator, step_calculator_zeros
 from model_engine.fluid_characterization import pressure_drop_calculator
 from utilities.charts_and_schematics import data_frame_creator
 
@@ -15,7 +15,7 @@ np.set_printoptions(precision=5, suppress=True, threshold=sys.maxsize)
 
 class ResultArray:
     def __init__(self, bit_info, drill_string, bottom_hole_assembly,
-                 casing_design, hole_size_input, well_trajectory_file):
+                 casing_design, hole_size_input, well_trajectory_file, calculation_step_difference):
         self.bit = bit_info
         self.drillstring = drill_string
         self.bha = bottom_hole_assembly
@@ -23,36 +23,37 @@ class ResultArray:
         self.openholesize = hole_size_input
         self.wellplan = well_trajectory_file
         self.welltrajectory = WellTrajectory(self.wellplan)
+        self.step = calculation_step_difference
         self.bit_depth = bit_depth_finder(self.drillstring, self.bha)
-        self.measured_depths = np.arange(self.bit_depth).reshape((self.bit_depth, 1))
-        self.inclination_list = np.zeros((self.bit_depth, 1))
-        self.tvd_list = np.zeros((self.bit_depth, 1))
-        self.ann_id_list = np.zeros((self.bit_depth, 1))
-        self.string_od_list = np.zeros((self.bit_depth, 1))
-        self.string_id_list = np.zeros((self.bit_depth, 1))
+        self.measured_depths = step_calculator(self.bit_depth, self.step)
+        self.inclination_list = step_calculator_zeros(self.bit_depth, self.step)
+        self.tvd_list = step_calculator_zeros(self.bit_depth, self.step)
+        self.ann_id_list = step_calculator_zeros(self.bit_depth, self.step)
+        self.string_od_list = step_calculator_zeros(self.bit_depth, self.step)
+        self.string_id_list = step_calculator_zeros(self.bit_depth, self.step)
         self.diameter_calculator = DiameterProfile(self.csgdesign, self.drillstring, self.bha,self.openholesize)
 
     def show_inputs_in_field_units(self):
-        i = 0
-        while i < self.bit_depth:
-            inc = self.welltrajectory.inclination_finder(self.measured_depths[i, 0])
-            tvd = self.welltrajectory.tvd_finder(self.measured_depths[i, 0])
-            inner_diameter = self.diameter_calculator.annulus_id_finder_with_depth_input(self.measured_depths[i, 0])
-            outer_diameter = self.diameter_calculator.drill_string_od_finder_with_depth_input(
-                self.measured_depths[i, 0])
-            string_inner_diameter = self.diameter_calculator.drill_string_id_finder_with_depth_input(
-                self.measured_depths[i, 0])
+        index = 0
 
-            self.inclination_list[i, 0] = inc
-            self.tvd_list[i, 0] = tvd
-            self.ann_id_list[i, 0] = inner_diameter
-            self.string_od_list[i, 0] = outer_diameter
-            self.string_id_list[i, 0] = string_inner_diameter
+        for i in self.measured_depths:
+            inc = self.welltrajectory.inclination_finder(i)
+            tvd = self.welltrajectory.tvd_finder(i)
+            inner_diameter = self.diameter_calculator.annulus_id_finder_with_depth_input(i)
+            outer_diameter = self.diameter_calculator.drill_string_od_finder_with_depth_input(i)
+            string_inner_diameter = self.diameter_calculator.drill_string_id_finder_with_depth_input(i)
 
-            i += 1
+            self.inclination_list[index] = inc
+            self.tvd_list[index] = tvd
+            self.ann_id_list[index] = inner_diameter
+            self.string_od_list[index] = outer_diameter
+            self.string_id_list[index] = string_inner_diameter
+
+            index += 1
 
         composite_list_field_units = np.hstack((self.measured_depths, self.inclination_list, self.tvd_list,
                                                 self.ann_id_list, self.string_od_list, self.string_id_list))
+
         return composite_list_field_units
 
     def show_inputs_in_si_units(self):
@@ -68,6 +69,7 @@ class ResultArray:
             composite_list_si_units[:, columns.names['composite_list_columns_string_od']])
         composite_list_si_units[:, columns.names['composite_list_columns_string_id']] = unit_converter_inches_to_meter(
             composite_list_si_units[:, columns.names['composite_list_columns_string_id']])
+
         return composite_list_si_units
 
     def pressure_drop_calculations_si_units(self, yield_stress_tao_y, consistency_index_k, fluid_behavior_index_m,
@@ -78,21 +80,21 @@ class ResultArray:
         results_si_units = np.c_[results_si_units, np.zeros(row_count), np.zeros(row_count)]
         row_index = 0
         for row in self.show_inputs_in_si_units():
-            pipe_p_drop = pressure_drop_calculator(yield_stress_tao_y, consistency_index_k,fluid_behavior_index_m,
+            pipe_p_drop = (pressure_drop_calculator(yield_stress_tao_y, consistency_index_k,fluid_behavior_index_m,
                                                    flow_rate_q, mud_density,eccentricity_e, 'pipe',
                                                    row[columns.names['composite_list_columns_annulus_diameter']],
                                                    row[columns.names['composite_list_columns_string_od']],
-                                                   row[columns.names['composite_list_columns_string_id']])
+                                                   row[columns.names['composite_list_columns_string_id']])) * self.step
             if row_index == 0:
                 p_drop_pipe_si_units = misc_parasitic_losses(nozzle_list, mud_density, flow_rate_q)
             else:
                 p_drop_pipe_si_units = pipe_p_drop
-            p_drop_annular_si_units = pressure_drop_calculator(yield_stress_tao_y, consistency_index_k,
+            p_drop_annular_si_units = (pressure_drop_calculator(yield_stress_tao_y, consistency_index_k,
                                                                fluid_behavior_index_m, flow_rate_q, mud_density,
                                                                eccentricity_e, 'annular',
                                                                row[columns.names['composite_list_columns_annulus_diameter']],
                                                                row[columns.names['composite_list_columns_string_od']],
-                                                               row[columns.names['composite_list_columns_string_id']])
+                                                               row[columns.names['composite_list_columns_string_id']])) * self.step
             results_si_units[
                 row_index, columns.names['composite_list_columns_pipe_pressure_drop']] = p_drop_pipe_si_units
             results_si_units[

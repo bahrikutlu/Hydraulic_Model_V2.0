@@ -105,3 +105,7 @@ class ImportFromExcel:
     def units(self):
         cell = self.sheet.cell(60, 2)
         return cell.value
+
+    def calculation_step_difference(self):
+        cell = self.sheet.cell(61, 2)
+        return cell.value

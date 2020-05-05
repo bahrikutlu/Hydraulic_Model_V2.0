@@ -20,6 +20,30 @@ def create_folders():
         if not os.path.exists(folder):
             os.makedirs(folder)
 
+
+#creates the array based on calculation steps (every x feet) wanted and appends the bit depth as the final element.
+def step_calculator(bit_depth, calculation_step):
+    if bit_depth % calculation_step == 0 or calculation_step == 1:
+        step = int(bit_depth/calculation_step)
+        array = np.arange(0, bit_depth + calculation_step, calculation_step).reshape((step + 1, 1))
+    else:
+        step = int(bit_depth / calculation_step)
+        array = np.arange(0, bit_depth + calculation_step, calculation_step)
+        array = np.delete(array, step+1)
+        array = np.append(array, bit_depth).reshape((step + 2, 1))
+    return array
+
+
+def step_calculator_zeros(bit_depth, calculation_step):
+    if bit_depth % calculation_step == 0:
+        step = int(bit_depth / calculation_step)
+        array = np.zeros((step+1, 1))
+    else:
+        step = int(bit_depth / calculation_step)
+        array = np.zeros((step+2, 1))
+    return array
+
+
 class WellTrajectory:
     def __init__(self, file_name):
         self.filename = file_name

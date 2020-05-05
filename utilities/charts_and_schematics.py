@@ -60,7 +60,7 @@ def wellbore_schematic(drill_string, bottom_hole_assembly, casing_design, open_h
     plt.gca().invert_yaxis()
     plt.gcf().set_size_inches(2, 6, forward=True)
     plt.tick_params(labelsize=6, labelrotation=90)
-    plt.savefig(wellbore_schematic_image_directory)
+    plt.savefig(wellbore_schematic_image_directory, bbox_inches='tight')
     plt.close()
 
 
@@ -71,7 +71,7 @@ def ecd_profile_chart(result_array):  # plots a chart that shows measured depth 
     measured_depth = array[lines_to_skip:, columns.names['composite_list_columns_md']]
     ecd = array[lines_to_skip:, columns.names['composite_list_columns_equivalent_circulating_density']]
     tool_tips = [("(x,y)", "(@x{1.11} ppg, @y ft)")]
-    ecd_chart = figure(plot_width=400, plot_height=400, tooltips=tool_tips, title="ECD Along the Wellbore")
+    ecd_chart = figure(plot_width=600, plot_height=600, tooltips=tool_tips, title="ECD Along the Wellbore")
     ecd_chart.line(ecd, measured_depth, line_width=2)
     ecd_chart.y_range.flipped = True
     ecd_chart.xaxis.axis_label = "ECD, ppg"
@@ -90,7 +90,7 @@ def ecd_profile_zoomed_chart(result_array):  # plots a chart that shows measured
     measured_depth = array[inclination_horizontal:, columns.names['composite_list_columns_md']]
     ecd = array[inclination_horizontal:, columns.names['composite_list_columns_equivalent_circulating_density']]
     tool_tips = [("(x,y)", "(@x{1.11} ppg, @y ft)")]
-    ecd_chart_z = figure(plot_width=400, plot_height=400, tooltips=tool_tips,
+    ecd_chart_z = figure(plot_width=600, plot_height=600, tooltips=tool_tips,
                          title="ECD Along the Wellbore (Lateral Zoom)")
     ecd_chart_z.line(ecd, measured_depth, line_width=2)
     ecd_chart_z.y_range.flipped = True
@@ -106,7 +106,7 @@ def pipe_pressure_drop_chart(result_array):
     measured_depth = array[lines_to_skip:, columns.names['composite_list_columns_md']]
     pipe_pressure_drop = array[lines_to_skip:, columns.names['composite_list_columns_cumulative_pipe_pressure_drop']]
     tool_tips = [("(x,y)", "(@x{1.1} psi, @y ft)")]
-    pipe_p_drop = figure(plot_width=400, plot_height=400, tooltips=tool_tips,
+    pipe_p_drop = figure(plot_width=600, plot_height=600, tooltips=tool_tips,
                          title="Total P Drop in Surf. Lines, Drill String, BHA and Bit")
     pipe_p_drop.line(pipe_pressure_drop, measured_depth, line_width=2)
     pipe_p_drop.y_range.flipped = True
@@ -123,7 +123,7 @@ def annular_pressure_drop_chart(result_array):
     annular_pressure_drop = array[lines_to_skip:,
                             columns.names['composite_list_columns_cumulative_annular_pressure_drop']]
     tool_tips = [("(x,y)", "(@x{1.1} psi, @y ft)")]
-    annular_p_drop = figure(plot_width=400, plot_height=400, tooltips=tool_tips, title="Annular Pressure Drop")
+    annular_p_drop = figure(plot_width=600, plot_height=600, tooltips=tool_tips, title="Annular Pressure Drop")
     annular_p_drop.line(annular_pressure_drop, measured_depth, line_width=2)
     annular_p_drop.y_range.flipped = True
     annular_p_drop.xaxis.axis_label = "Pressure Drop, psi"
@@ -138,7 +138,7 @@ def pump_pressure_chart(result_array):
     measured_depth = array[lines_to_skip:, columns.names['composite_list_columns_md']]
     pump_pressure_drop = array[lines_to_skip:, columns.names['composite_list_columns_pump_pressure']]
     tool_tips = [("(x,y)", "(@x{1.1} psi, @y ft)")]
-    annular_p_drop = figure(plot_width=400, plot_height=400, tooltips=tool_tips, title="Estimated Pump Pressure")
+    annular_p_drop = figure(plot_width=600, plot_height=600, tooltips=tool_tips, title="Estimated Pump Pressure")
     annular_p_drop.line(pump_pressure_drop, measured_depth, line_width=2)
     annular_p_drop.y_range.flipped = True
     annular_p_drop.xaxis.axis_label = "Pump Pressure, psi"
@@ -159,7 +159,7 @@ def tvd_vs_chart():
         'VS': distance,
         'MD': md})
     # tool_tips = [("(x,y)", "(@x{1.1} Closure Distance, ft, @y TVD, ft)")]
-    profile = figure(plot_width=400, plot_height=400, title="Wellbore Profile")
+    profile = figure(plot_width=600, plot_height=600, title="Wellbore Profile")
     profile.line(x='VS', y='TVD', line_width=2, source=source)
 
     profile.add_tools(HoverTool(

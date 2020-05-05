@@ -39,6 +39,7 @@ def simulation_and_reporting_package(sheet_name):
     mud_density_input = importer.mud_weight()
     unit_system = importer.units()
     bit = importer.bit()
+    step = importer.calculation_step_difference()
 
     print(f"Inputs are pulled from the sheet named {simulation_name} of input.xlsx")
 
@@ -74,7 +75,7 @@ def simulation_and_reporting_package(sheet_name):
                              bottom_hole_assembly,
                              casing_design,
                              hole_size_input,
-                             input_directional_plan_directory)
+                             input_directional_plan_directory,step)
 
     print("Inputs are processed and placed in an array, proceeding with pressure drop calculations...")
 
