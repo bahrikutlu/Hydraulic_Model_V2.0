@@ -14,14 +14,14 @@ body {
   grid-template-columns: 640px;
   /*header 150px, content auto, footer 200px*/
   grid-template-rows: auto auto auto;
-  gap: 20px 20px;
+  gap: 10px 10px;
   grid-template-areas: "header" "content" "footer";
 }
 
 
 .header { grid-area: header;
   background-color: white;
-  padding-left: 10px;
+  padding: 1px;
   text-align: center;
   border: 2px solid black;
   border-radius: 15px;
@@ -29,10 +29,8 @@ body {
 }
 
 .content { grid-area: content;
-  /*spreads tables across*/
-  /*display: grid;*/
   background-color: white;
-  padding-left: 10px;
+  padding: 1px;
   text-align: center;
   border: 2px solid black;
   border-radius: 15px;
@@ -89,4 +87,11 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+/* Add a card effect for articles */
+.card {
+  background-color: transparent;
+  padding: 5px;
+
 }

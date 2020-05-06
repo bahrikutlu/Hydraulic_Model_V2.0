@@ -5,8 +5,8 @@ def unit_converter_inches_to_meter(inches):
     return inches * 0.0254
 
 
-def unit_converter_feet_to_meter(inches):
-    return inches * 0.3048
+def unit_converter_feet_to_meter(feet):
+    return feet * 0.3048
 
 
 def unit_converter_yield_stress_field_units_to_pascal(lb_per_100sqft):

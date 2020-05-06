@@ -15,12 +15,14 @@ np.set_printoptions(precision=5, suppress=True, threshold=sys.maxsize)
 
 class ResultArray:
     def __init__(self, bit_info, drill_string, bottom_hole_assembly,
-                 casing_design, hole_size_input, well_trajectory_file, calculation_step_difference):
+                 casing_design, hole_size_input, well_trajectory_file, calculation_step_difference, consistency_index_k, surf_class):
         self.bit = bit_info
         self.drillstring = drill_string
         self.bha = bottom_hole_assembly
         self.csgdesign = casing_design
         self.openholesize = hole_size_input
+        self.k = consistency_index_k
+        self.surfacelineclass = surf_class
         self.wellplan = well_trajectory_file
         self.welltrajectory = WellTrajectory(self.wellplan)
         self.step = calculation_step_difference
@@ -86,7 +88,7 @@ class ResultArray:
                                                    row[columns.names['composite_list_columns_string_od']],
                                                    row[columns.names['composite_list_columns_string_id']])) * self.step
             if row_index == 0:
-                p_drop_pipe_si_units = misc_parasitic_losses(nozzle_list, mud_density, flow_rate_q)
+                p_drop_pipe_si_units = misc_parasitic_losses(nozzle_list, mud_density, flow_rate_q, self.bha, self.k, self.surfacelineclass)
             else:
                 p_drop_pipe_si_units = pipe_p_drop
             p_drop_annular_si_units = (pressure_drop_calculator(yield_stress_tao_y, consistency_index_k,

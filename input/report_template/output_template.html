@@ -18,61 +18,97 @@
 
   <div class="content">
 
-    <h2>Casing Summary</h2>
-    {{casing_table}}
+    <div class="card">
+      <h2>Casing Summary</h2>
+      {{casing_table}}
+    </div>
 
-    <h2>Drill String and Bottom Hole Assembly</h2>
-    {{drill_string_and_bha_table}}
+    <p style="page-break-after: always;">&nbsp;</p>
 
-    <h3>Bit Nozzles</h3>
-    {{bit_table}}
+    <div class="card">
+      <h2>Drill String and Bottom Hole Assembly</h2>
+      {{drill_string_and_bha_table}}
+      <h3>Bit Nozzles</h3>
+      {{bit_table}}
+    </div>
 
-<!--    <p style="page-break-after: always;">&nbsp;</p>-->
+    <p style="page-break-after: always;">&nbsp;</p>
 
-    <h2>Drilling Fluid Properties</h2>
-    <h3>Viscometer Readings</h3>
-    {{viscometer_reading}}
+    <div class="card">
+      <h2>Drilling Fluid Properties</h2>
+      <h3>Viscometer Readings</h3>
+      {{viscometer_reading}}
 
-    <h3>Mud Rheological Properties</h3>
-    {{fluid_properties}}
+      <h3>Parameters</h3>
+      {{flowratedensityholesize}}
 
-    <h3>Rheogram</h3>
-	<img src="{{flowcurve}}" alt="flow curve" class="images">
+      <h3>Mud Rheological Properties</h3>
+      {{fluid_properties}}
 
-    <h2>Wellbore Schematic</h2>
-    <img src="{{wellboreschematic}}" alt="wellbore schematic" class="images">
+      <h3>Rheogram</h3>
+      <img src="{{flowcurve}}" alt="flow curve" class="images">
+    </div>
 
-<!--    <p style="page-break-after: always;">&nbsp;</p>-->
+    <p style="page-break-after: always;">&nbsp;</p>
 
-    <h2>Wellbore Profile</h2>
-    {% include 'output/charts/tvd_vs_distance.html' ignore missing %}
+    <div class="card">
 
-<!--    <p style="page-break-after: always;">&nbsp;</p>-->
+      <h2>Wellbore Schematic</h2>
+      <img src="{{wellboreschematic}}" alt="wellbore schematic" class="images">
 
-    <h2>Results</h2>
-    <h3>Pressure Drop by Component</h3>
-    {{summary_table}}
-	{% include 'output/charts/pressure_by_component.html' ignore missing %}
+    </div>
 
-<!--    <p style="page-break-after: always;">&nbsp;</p>-->
+    <p style="page-break-after: always;">&nbsp;</p>
 
-    <h3>Equivalent Circulating Density, ECD</h3>
-    {{ecd_table}}
+    <div class="card">
 
-    <h2>Charts</h2>
+      <h2>Wellbore Profile</h2>
+      {% include 'output/charts/tvd_vs_distance.html' ignore missing %}
 
-    {% include 'output/charts/ecd.html' ignore missing %}
+    </div>
 
-    {% include 'output/charts/ecd_zoomed.html' ignore missing %}
+    <p style="page-break-after: always;">&nbsp;</p>
 
-<!--    <p style="page-break-after: always;">&nbsp;</p>-->
+    <div class="card">
+      <h2>Results</h2>
+      <h3>Pressure Drop by Component</h3>
+      {{summary_table}}
+	  {% include 'output/charts/pressure_by_component.html' ignore missing %}
+    </div>
 
-    {% include 'output/charts/annular_pressure_drop.html' ignore missing %}
-    {% include 'output/charts/drill_pipe_pressure_drop.html' ignore missing %}
+    <p style="page-break-after: always;">&nbsp;</p>
 
-<!--    <p style="page-break-after: always;">&nbsp;</p>-->
+    <div class="card">
+      <h3>Equivalent Circulating Density, ECD</h3>
+      {{ecd_table}}
 
-    {% include 'output/charts/pump_pressure.html' ignore missing %}
+      <h2>Charts</h2>
+
+      {% include 'output/charts/ecd.html' ignore missing %}
+    </div>
+
+    <p style="page-break-after: always;">&nbsp;</p>
+
+    <div class="card">
+      {% include 'output/charts/ecd_zoomed.html' ignore missing %}
+    </div>
+    <p style="page-break-after: always;">&nbsp;</p>
+
+    <div class="card">
+      {% include 'output/charts/annular_pressure_drop.html' ignore missing %}
+    </div>
+
+    <p style="page-break-after: always;">&nbsp;</p>
+
+    <div class = "card">
+      {% include 'output/charts/drill_pipe_pressure_drop.html' ignore missing %}
+    </div>
+
+    <p style="page-break-after: always;">&nbsp;</p>
+
+    <div class = "card">
+      {% include 'output/charts/pump_pressure.html' ignore missing %}
+    </div>
     </div>
 
   <div class="footer">

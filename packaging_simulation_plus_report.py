@@ -22,7 +22,6 @@ def simulation_and_reporting_package(sheet_name):
     # inputs are pulled from the input.xlsx excel file located in the input folder.
     # change the simulation name variable below to the name of the sheet in excel if
     # a new sheet is created to place new inputs.
-
     simulation_name = sheet_name  # THIS IS THE ONLY VARIABLE THAT NEEDS TO BE CHANGED IN CODE
     importer = ImportFromExcel(simulation_name)
     # calling the inputs from excel file
@@ -40,6 +39,7 @@ def simulation_and_reporting_package(sheet_name):
     unit_system = importer.units()
     bit = importer.bit()
     step = importer.calculation_step_difference()
+    surface_lines_class = importer.surf_lines_class()
 
     print(f"Inputs are pulled from the sheet named {simulation_name} of input.xlsx")
 
@@ -75,7 +75,7 @@ def simulation_and_reporting_package(sheet_name):
                              bottom_hole_assembly,
                              casing_design,
                              hole_size_input,
-                             input_directional_plan_directory,step)
+                             input_directional_plan_directory, step, consistency_index_k_input, surface_lines_class)
 
     print("Inputs are processed and placed in an array, proceeding with pressure drop calculations...")
 
@@ -119,14 +119,14 @@ def simulation_and_reporting_package(sheet_name):
     tvd_vs_chart()
     pressure_pie_chart(casing_design, drill_string, bottom_hole_assembly, bit, bit_nozzles, shear_rate,shear_stress,
                            fluid_type, yield_stress_tao_y_input, consistency_index_k_input,fluid_behavior_index_m,
-                           mud_density_input, flow_rate_q_input)
+                           mud_density_input, flow_rate_q_input, simulation_name, surface_lines_class, hole_size_input)
 
     print("Interactive charts for the report are created")
 
     # Output report is created:
     html_report_creator(casing_design, drill_string, bottom_hole_assembly, bit, bit_nozzles, shear_rate,
                         shear_stress, fluid_type, yield_stress_tao_y_input, consistency_index_k_input,
-                        fluid_behavior_index_m, mud_density_input, flow_rate_q_input)
+                        fluid_behavior_index_m, mud_density_input, flow_rate_q_input, simulation_name, surface_lines_class, hole_size_input)
 
     print("Output report is created")
 

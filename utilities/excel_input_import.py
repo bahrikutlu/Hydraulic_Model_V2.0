@@ -109,3 +109,7 @@ class ImportFromExcel:
     def calculation_step_difference(self):
         cell = self.sheet.cell(61, 2)
         return cell.value
+
+    def surf_lines_class(self):
+        cell = self.sheet.cell(59, 2)
+        return cell.value

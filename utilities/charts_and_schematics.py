@@ -178,12 +178,12 @@ def tvd_vs_chart():
 
 def pressure_pie_chart(casing_design, drill_string, bottom_hole_assembly, bit, bit_nozzles, shear_rate, shear_stress,
                        fluid_type, yield_stress_tao_y_input, consistency_index_k_input, fluid_behavior_index_m,
-                       mud_density_input, flow_rate_q_input):
+                       mud_density_input, flow_rate_q_input, sheet_name, surf_class, holesize):
 
     tablescreator = ReportContentCreator(casing_design, drill_string, bottom_hole_assembly, bit, bit_nozzles,
                                          shear_rate, shear_stress, fluid_type, yield_stress_tao_y_input,
                                          consistency_index_k_input, fluid_behavior_index_m, mud_density_input,
-                                         flow_rate_q_input)
+                                         flow_rate_q_input, sheet_name, surf_class, holesize)
     sumtable = tablescreator.result_summary_table()
     sumtable = sumtable.T.to_dict('list')
     for key in sumtable:
