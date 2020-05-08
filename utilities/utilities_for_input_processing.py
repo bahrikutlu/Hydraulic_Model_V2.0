@@ -108,7 +108,9 @@ class DiameterProfile:
             if top_depth > 0:
                 well_inner_diameter_profile[i - 1][1] = top_depth
             i += 1
-        well_inner_diameter_profile.insert(0, [self.casingdesign[0][1], 0])
+
+        if self.casingdesign:
+            well_inner_diameter_profile.insert(0, [self.casingdesign[0][1], 0])
 
         i = 2
         while i < len(well_inner_diameter_profile):
@@ -116,8 +118,11 @@ class DiameterProfile:
                                                    well_inner_diameter_profile[i - 1][1] + 1])
             i += 2
 
-        # append the open hole size, starting depth
-        well_inner_diameter_profile.append([self.openholesize, self.casingdesign[len(self.casingdesign)-1][2]+1])
+        if self.casingdesign:
+            # append the open hole size, starting depth
+            well_inner_diameter_profile.append([self.openholesize, self.casingdesign[len(self.casingdesign)-1][2]+1])
+        else:
+            well_inner_diameter_profile.append([self.openholesize, 0])
         # append the open hole size, final depth
         well_inner_diameter_profile.append([self.openholesize, self.entirestring[len(self.entirestring)-1][2]])
 
@@ -129,7 +134,6 @@ class DiameterProfile:
         for item in self.annulus_inner_diameter_profile_calculator():
             inner_diam_list.append(item[0])
             depth_list.append(item[1])
-
         f = interpolate.interp1d(depth_list, inner_diam_list)
         return f(depth)
 
@@ -140,7 +144,7 @@ class DiameterProfile:
         return outer_diams
 
     def annulus_depths(self):
-        depths=[]
+        depths= []
         for item in self.annulus_inner_diameter_profile_calculator():
             depths.append(item[1])
         return depths

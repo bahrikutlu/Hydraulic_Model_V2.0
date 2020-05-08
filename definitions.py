@@ -6,7 +6,9 @@ root_dir = os.path.dirname(os.path.abspath(__file__))
 
 # inputs
 input_well = os.path.join(root_dir, Path('input/input.xlsx'))
-input_directional_plan_directory = os.path.join(root_dir, Path('input/directional_plan.csv'))
+# input_directional_plan_directory = os.path.join(root_dir, Path('input/directional_plan.csv'))
+input_directional_plan_directory = os.path.join(root_dir, Path('input/directional plans/vertical.csv'))
+
 
 # output files raw and with header
 output_raw_field_units = os.path.join(root_dir, Path('output/calculation_results/raw/pressure_drop_field.csv'))

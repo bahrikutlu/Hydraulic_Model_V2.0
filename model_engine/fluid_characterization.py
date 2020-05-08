@@ -224,6 +224,9 @@ def pressure_drop_calculator(yield_stress_tao_y,
         tao_w_updated = fann_friction_factor_updated * fluid_density *(velocity**2)/2
         iteration_difference = abs((tao_w_updated - tao_w_initial) / tao_w_initial)
         tao_w_initial = tao_w_updated
-
     pressure_drop = 4 * tao_w_updated / d_hyd
+    if conduit_type == "annular":
+        print(flow_behavior_index_updated)
+        print(generalized_reynolds_number_updated)
+        print(fann_friction_factor_updated)
     return pressure_drop

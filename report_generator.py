@@ -102,12 +102,15 @@ class ReportContentCreator:
     def ecd_table(self):
         header_ecd = ['ECD, ppg']
         index_name_ecd = ['ECD at Shoe','ECD at Bottom Hole']
-        read_data=pd.read_csv(output_data_frame)
+        read_data = pd.read_csv(output_data_frame)
         data = read_data.set_index("MD", drop=False)
+
         ecd_td = round(data.iloc[-1]["ECD"], 2)
         if len(self.casing) > 0:
             shoe_depth = self.casing[-1][string_input_columns['input_list_bottom_depth']]
-            ecd_shoe = round(data.loc[shoe_depth, "ECD"], 2)
+            index_of_nearest_depth_to_shoe = data[:]["MD"].searchsorted(shoe_depth)
+            nearest_depth_to_shoe_in_results = data.iloc[index_of_nearest_depth_to_shoe]["MD"]
+            ecd_shoe = round(data.loc[nearest_depth_to_shoe_in_results, "ECD"], 2)
         else:
             ecd_shoe = "-"
         df_ecd = (pd.DataFrame(data=(ecd_shoe, ecd_td), columns=header_ecd, index=index_name_ecd))

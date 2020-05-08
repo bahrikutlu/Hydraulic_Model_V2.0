@@ -16,11 +16,12 @@ def power_law_model(sr, k, m):
 def rheological_parameters(shear_rate, shear_stress, fluid_type):
     rheology_parameters, cov = curve_fit(power_law_model, shear_rate, shear_stress)
     taoy = 0
+    taoy_limit = 5  # limits the max Taoy value
     k = rheology_parameters[0]
     m = rheology_parameters[1]
     if fluid_type == "YPL":
         x0 = [0, 0, 1]
-        result = least_squares(fun=yieldpowerlaw, x0=x0, args=(shear_rate, shear_stress), bounds=([0, 0, 0], [0.985, 5, 1]))
+        result = least_squares(fun=yieldpowerlaw, x0=x0, args=(shear_rate, shear_stress), bounds=([0, 0, 0], [taoy_limit, 5, 1]))
         taoy = result.x[0]
         k = result.x[1]
         m = result.x[2]

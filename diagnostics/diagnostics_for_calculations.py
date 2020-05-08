@@ -5,16 +5,16 @@ from model_engine.fluid_characterization import *
 from utilities.unit_converters import *
 
 # ##########################troubleshoot FLUID TEST INPUT############################
-# hole_size_input = 0
-# pipe_od_input = 0
-# pipe_id_input = 1.248
+# hole_size_input = 8.5
+# pipe_od_input = 5
+# pipe_id_input = 0
 # eccentricity_e = 0
-# yield_stress_tao_y_input = 0
-# consistency_index_k_input = 0.088357 #(lbf*s^m/100ft2)
-# fluid_behavior_index_m = 0.773816
-# flow_rate_q_input = 8.75226280952381
-# mud_density_input = 9.6
-# conduit_type = "pipe"
+# yield_stress_tao_y_input = 4.307
+# consistency_index_k_input = 1.06 #(lbf*s^m/100ft2)
+# fluid_behavior_index_m = 0.555
+# flow_rate_q_input = 600
+# mud_density_input = 10
+# conduit_type = "annular"
 ###########################YIELD POWER LAW FLUID TEST INPUT#####################################
 ## 600/300/200/100/6/3 : 54/38/31/23/8/7
 ## tao_y = 4.29 , K (lbf*s/100ft2) = 1.06601170, m = 0.55
@@ -32,16 +32,16 @@ from utilities.unit_converters import *
 
 
 # # ###########################NEWTONIAN FLUID TEST INPUT############################
-hole_size_input = 0
-pipe_od_input = 0
-pipe_id_input = 4.276
+hole_size_input = 8.5
+pipe_od_input = 5
+pipe_id_input = 0
 eccentricity_e = 0
-yield_stress_tao_y_input = 0
-consistency_index_k_input = 0.522125 #0.0017888 #(lbf*s^m/100ft2) dynamic visc of water at 80F
-fluid_behavior_index_m = 1
+yield_stress_tao_y_input = 4.29
+consistency_index_k_input = 1.066 #0.0017888 #(lbf*s^m/100ft2) dynamic visc of water at 80F. multiply this unit with 479 to get visc as centipoise
+fluid_behavior_index_m = 0.55
 flow_rate_q_input = 600
 mud_density_input = 10
-conduit_type = "pipe"
+conduit_type = "annular"
 
 # converted units
 hole_size = unit_converter_inches_to_meter(hole_size_input)
@@ -92,8 +92,8 @@ print(f"fann friction factor : {fann_friction}")
 pressure_drop = pressure_drop_calculator(yield_stress_tao_y,consistency_index_k,fluid_behavior_index_m,flow_rate_q,mud_density,eccentricity_e,conduit_type,hole_size,pipe_od,pipe_id)
 print(f"Pressure Drop (Pa) : {pressure_drop}")
 print(f"Pressure Drop (psi) for 1ft: {unit_converter_pascalovermeter_to_psioverft(pressure_drop)}")
-print(f"Pressure Drop (psi) for 1000ft: {unit_converter_pascalovermeter_to_psioverft(pressure_drop)*1000}")
-print(f"Pressure Drop (pascal) for 304.8m: {pressure_drop * 304.8}")
+print(f"Pressure Drop (psi) for 3.75ft: {unit_converter_pascalovermeter_to_psioverft(pressure_drop)*3.75}")
+print(f"Pressure Drop (pascal) for 1.143m: {pressure_drop * 1.143}")
 
 
 if conduit_type == 'annular':

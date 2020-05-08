@@ -78,7 +78,6 @@ def simulation_and_reporting_package(sheet_name):
                              input_directional_plan_directory, step, consistency_index_k_input, surface_lines_class)
 
     print("Inputs are processed and placed in an array, proceeding with pressure drop calculations...")
-
     if unit_system == 'field':
         input_data.pressure_drop_calculations_field_units(yield_stress_tao_y,
                                                                     consistency_index_k,

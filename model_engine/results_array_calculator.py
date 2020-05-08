@@ -103,6 +103,7 @@ class ResultArray:
                 row_index, columns.names['composite_list_columns_annulus_pressure_drop']] = p_drop_annular_si_units
             row_index += 1
 
+
         # send results to another function to calculate cumulative pressure drop per depth
         results_si_units = cumulative_pressure_drop_calculator(results_si_units,mud_density,flow_rate_q, nozzle_list)
 
