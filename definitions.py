@@ -1,4 +1,6 @@
+import errno
 import os
+from shutil import rmtree
 from pathlib import Path
 
 # This is your Project Root
@@ -6,9 +8,7 @@ root_dir = os.path.dirname(os.path.abspath(__file__))
 
 # inputs
 input_well = os.path.join(root_dir, Path('input/input.xlsx'))
-# input_directional_plan_directory = os.path.join(root_dir, Path('input/directional_plan.csv'))
-input_directional_plan_directory = os.path.join(root_dir, Path('input/directional plans/vertical.csv'))
-
+input_directional_plan_directory = os.path.join(root_dir, Path('input/directional_plan.csv'))
 
 # output files raw and with header
 output_raw_field_units = os.path.join(root_dir, Path('output/calculation_results/raw/pressure_drop_field.csv'))
@@ -21,6 +21,7 @@ wellbore_schematic_image_directory = os.path.join(root_dir, Path('output/plots/w
 flow_curve_image_directory = os.path.join(root_dir, Path('output/plots/flow_curve.png'))
 
 # output folders
+output_root = os.path.join(root_dir, Path('output'))
 raw_results = os.path.join(root_dir, Path('output/calculation_results/raw')) #use with makedirs
 charts_folder = os.path.join(root_dir, Path('output/charts'))
 directional_plan_folder = os.path.join(root_dir, Path('output/directional_plan'))
@@ -42,4 +43,35 @@ tvd_verticalsec_chart_directory = os.path.join(root_dir, Path('output/charts/tvd
 pressure_by_component = os.path.join(root_dir, Path('output/charts/pressure_by_component.html'))
 
 
+def silentremove_file(filename):
+    try:
+
+        os.remove(filename)
+    except OSError as e:  # this would be "except OSError, e:" before Python 2.6
+        if e.errno != errno.ENOENT:  # errno.ENOENT = no such file or directory
+            raise  # re-raise exception if a different error occurred
+
+
+def silentremove_folder(folder):
+    try:
+        rmtree(folder, ignore_errors=True)
+    except OSError as e:  # this would be "except OSError, e:" before Python 2.6
+        if e.errno != errno.ENOENT:  # errno.ENOENT = no such file or directory
+            raise  # re-raise exception if a different error occurred
+
+
+def silentremove_all_files_in_folder(folder):
+    try:
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print('Failed to delete %s. Reason: %s' % (file_path, e))
+    except OSError as e:  # this would be "except OSError, e:" before Python 2.6
+        if e.errno != errno.ENOENT:  # errno.ENOENT = no such file or directory
+            raise  # re-raise exception if a different error occurred
 

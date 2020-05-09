@@ -33,15 +33,15 @@ from utilities.unit_converters import *
 
 # # ###########################NEWTONIAN FLUID TEST INPUT############################
 hole_size_input = 8.5
-pipe_od_input = 5
-pipe_id_input = 0
+pipe_od_input = 6.625
+pipe_id_input = 3.25
 eccentricity_e = 0
 yield_stress_tao_y_input = 4.29
 consistency_index_k_input = 1.066 #0.0017888 #(lbf*s^m/100ft2) dynamic visc of water at 80F. multiply this unit with 479 to get visc as centipoise
 fluid_behavior_index_m = 0.55
-flow_rate_q_input = 600
+flow_rate_q_input = 200
 mud_density_input = 10
-conduit_type = "annular"
+conduit_type = "pipe"
 
 # converted units
 hole_size = unit_converter_inches_to_meter(hole_size_input)

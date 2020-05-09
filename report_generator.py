@@ -41,19 +41,24 @@ class ReportContentCreator:
         return df
 
     def drillstring_and_bha_table(self):
-        header = ["OD, in", "ID, in", "Bottom Depth, ft", "Top Depth, in"]
+        # add headers if new inputs are added
+        header = ["OD, in", "ID, in", "Bottom Depth, ft", "Top Depth, in", "Tool Joint (TJ) OD,in", "TJ ID, in"]
         index_name = []
         for pipe in self.drillpipe:
             # deleting duplicate column created above
             index_name.append(pipe.pop(string_input_columns['input_list_component_type']))
-
         for pipe in self.bottomholeass:
             # deleting duplicate column created above
             index_name.append(pipe.pop(string_input_columns['input_list_component_type']))
+        if len(self.drillpipe[0]) < len(header) and len(self.bottomholeass[0]) < len(header) :
+            header.pop()  # removes the Tool joint id header since none of the components specified a tool joint spec
+            header.pop()  # removes the tool joint od header
 
         if self.drillbit is not None:
             index_name.append("Bit")
+
         df = (pd.DataFrame(data=(self.drillpipe+self.bottomholeass+self.drillbit), columns=header, index=index_name))
+        df = df.fillna('-')  # this will replace empty cells (NaN) with a dash. NaN shows up otherwise when an input is missing
         return df
 
     def bit_nozzle_table(self):

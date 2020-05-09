@@ -9,7 +9,9 @@ names = {'composite_list_columns_md': 0,
          'composite_list_columns_cumulative_pipe_pressure_drop': 8,
          'composite_list_columns_cumulative_annular_pressure_drop': 9,
          'composite_list_columns_pump_pressure': 10,
-         'composite_list_columns_equivalent_circulating_density': 11}
+         'composite_list_columns_equivalent_circulating_density': 11,
+         'composite_list_columns_tool_joint_od': 12,
+         'composite_list_columns_tool_joint_id': 13}
 
 # Note: the column names in dataframe columns is used in the report_generator.py.
 dataframe_columns = ['MD', 'INC', 'TVD', 'Pipe P Drop', 'Annular P Drop', 'Pump Pressure', 'ECD']
@@ -18,7 +20,9 @@ string_input_columns = {'input_list_outer_diameter': 0,
                         'input_list_inner_diameter': 1,
                         'input_list_bottom_depth': 2,
                         'input_list_top_depth': 3,
-                        'input_list_component_type': 4}
+                        'input_list_component_type': 4,
+                        'tool_joint_od': 5,
+                        'tool_joint_id': 6}
 
 directional_plan_column_names = {"measured_depth": 0,
                                  "inclination": 1,

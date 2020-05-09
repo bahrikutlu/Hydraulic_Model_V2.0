@@ -234,8 +234,3 @@ class DiameterProfile:
 
         f = interpolate.interp1d(depth_list, inner_diam_list)
         return f(depth)
-
-
-
-
-create_folders()

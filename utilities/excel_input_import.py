@@ -113,3 +113,11 @@ class ImportFromExcel:
     def surf_lines_class(self):
         cell = self.sheet.cell(59, 2)
         return cell.value
+
+    def tool_joint_frequency(self):
+        cell = self.sheet.cell(62, 2)
+        return cell.value
+
+    def tool_joint_length(self):
+        cell = self.sheet.cell(63, 2)
+        return cell.value

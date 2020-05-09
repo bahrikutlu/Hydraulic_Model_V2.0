@@ -184,7 +184,7 @@ def fann_friction_factor(generalized_reynolds_number,
     if generalized_reynolds_number < transition_reynolds_number:
         return f_laminar
     elif generalized_reynolds_number < turbulent_reynolds_number:
-        return f_laminar  # this method is reasonable however, it can be improved in the future
+        return f_laminar  # this method is reasonable however, it can be improved in the future for transitional
     else:
         iteration_difference = 1
         f_initial = f_laminar
@@ -218,15 +218,25 @@ def pressure_drop_calculator(yield_stress_tao_y,
     while iteration_difference > 0.02:  # multiply the number with 100 to get percent difference
         shear_rate_updated = yield_power_law_newtonian_shear_rate(yield_stress_tao_y,consistency_index_k,fluid_behavior_index_m,pipe_od,tao_w_initial,eccentricity_e,hole_size,conduit_type)
         flow_behavior_index_updated = generalized_flow_behavior_index_n(yield_stress_tao_y,fluid_behavior_index_m,pipe_od,tao_w_initial,eccentricity_e,hole_size,conduit_type)
+
         generalized_consistency_index_updated = generalized_consistency_index_k_prime(tao_w_initial,shear_rate_updated,flow_behavior_index_updated)
         generalized_reynolds_number_updated = generalized_reynolds_number(fluid_density,velocity,hole_size,pipe_od,pipe_id,flow_behavior_index_updated,generalized_consistency_index_updated,conduit_type)
+
         fann_friction_factor_updated = fann_friction_factor(generalized_reynolds_number_updated,flow_behavior_index_updated,geometric_parameter_a,geometric_parameter_b)
+
         tao_w_updated = fann_friction_factor_updated * fluid_density *(velocity**2)/2
         iteration_difference = abs((tao_w_updated - tao_w_initial) / tao_w_initial)
+
+        if flow_behavior_index_updated < 0.1:  # this is to prevent returning an exception and exiting the loop. The Dodge Metzner friction factor calculation is not suited for flow behavior index less than 0.2
+            iteration_difference = 0.01
         tao_w_initial = tao_w_updated
     pressure_drop = 4 * tao_w_updated / d_hyd
-    if conduit_type == "annular":
-        print(flow_behavior_index_updated)
-        print(generalized_reynolds_number_updated)
-        print(fann_friction_factor_updated)
+
+    # if conduit_type == "annular":
+    #     print(velocity)
+    #     print(generalized_reynolds_number_updated)
+    #     print(flow_behavior_index_updated)
+    #     print(flow_rate)
+    #     print(hole_size)
+    #     print(pipe_od)
     return pressure_drop

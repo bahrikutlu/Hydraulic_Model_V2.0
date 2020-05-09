@@ -37,7 +37,6 @@ class ResultArray:
 
     def show_inputs_in_field_units(self):
         index = 0
-
         for i in self.measured_depths:
             inc = self.welltrajectory.inclination_finder(i)
             tvd = self.welltrajectory.tvd_finder(i)
@@ -81,6 +80,7 @@ class ResultArray:
         row_count = shape_of_data[0]
         results_si_units = np.c_[results_si_units, np.zeros(row_count), np.zeros(row_count)]
         row_index = 0
+        print(results_si_units[1][0]-results_si_units[0][0])
         for row in self.show_inputs_in_si_units():
             pipe_p_drop = (pressure_drop_calculator(yield_stress_tao_y, consistency_index_k,fluid_behavior_index_m,
                                                    flow_rate_q, mud_density,eccentricity_e, 'pipe',

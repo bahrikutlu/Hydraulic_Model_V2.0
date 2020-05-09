@@ -21,8 +21,6 @@ from definitions import wellbore_schematic_image_directory, ecd_chart_directory,
 
 def wellbore_schematic(drill_string, bottom_hole_assembly, casing_design, open_hole_size):
 
-
-
     annulus_inner_diameter_profile = DiameterProfile(casing_design,
                                                      drill_string,
                                                      bottom_hole_assembly,
@@ -219,21 +217,22 @@ def ecd_profile_zoomed_chart(result_array):  # plots a chart that shows measured
     lines_to_skip: int = 10
     inc = array[lines_to_skip:, columns.names['composite_list_columns_inc']]
     threshold = 70
+    itemindex = np.where(inc > threshold)
+    # use try except block to catch an exception where the inclination never gets to 70 degrees and return nothing
     try:
-        itemindex = np.where(inc > threshold)
         inclination_horizontal = itemindex[0][0]  # finds the index of row where inclination exceeds 70 degrees
-        measured_depth = array[inclination_horizontal:, columns.names['composite_list_columns_md']]
-        ecd = array[inclination_horizontal:, columns.names['composite_list_columns_equivalent_circulating_density']]
-        tool_tips = [("(x,y)", "(@x{1.11} ppg, @y ft)")]
-        ecd_chart_z = figure(plot_width=600, plot_height=600, tooltips=tool_tips,
-                             title="ECD Along the Wellbore (Lateral Zoom)")
-        ecd_chart_z.line(ecd, measured_depth, line_width=2)
-        ecd_chart_z.y_range.flipped = True
-        ecd_chart_z.xaxis.axis_label = "ECD, ppg"
-        ecd_chart_z.yaxis.axis_label = "MD, ft"
-        save(ecd_chart_z)
     except IndexError:
         return
+    measured_depth = array[inclination_horizontal:, columns.names['composite_list_columns_md']]
+    ecd = array[inclination_horizontal:, columns.names['composite_list_columns_equivalent_circulating_density']]
+    tool_tips = [("(x,y)", "(@x{1.11} ppg, @y ft)")]
+    ecd_chart_z = figure(plot_width=600, plot_height=600, tooltips=tool_tips,
+                         title="ECD Along the Wellbore (Lateral Zoom)")
+    ecd_chart_z.line(ecd, measured_depth, line_width=2)
+    ecd_chart_z.y_range.flipped = True
+    ecd_chart_z.xaxis.axis_label = "ECD, ppg"
+    ecd_chart_z.yaxis.axis_label = "MD, ft"
+    save(ecd_chart_z)
 
 
 def pipe_pressure_drop_chart(result_array):
@@ -287,7 +286,7 @@ def tvd_vs_chart():
     mincurve.generate_full_directional_plan(input_directional_plan_directory)
     array = np.genfromtxt(output_directional_directory, delimiter=',', skip_header=1)
     output_file(tvd_verticalsec_chart_directory)
-    lines_to_skip: int = 1
+    lines_to_skip: int = 0
     tvd = array[lines_to_skip:, 3]
     distance = array[lines_to_skip:, 8]
     md = array[lines_to_skip:, 0]
@@ -295,19 +294,14 @@ def tvd_vs_chart():
         'TVD': tvd,
         'VS': distance,
         'MD': md})
-    # tool_tips = [("(x,y)", "(@x{1.1} Closure Distance, ft, @y TVD, ft)")]
-    profile = figure(plot_width=600, plot_height=300, title="Wellbore Profile")
-    profile.line(x='VS', y='TVD', line_width=10, line_color='black',source=source)
-
-    profile.add_tools(HoverTool(
-        tooltips=[
-            ('TVD', '@TVD{1} ft'),
-            ('VS', '@VS{1} ft'),  # use @{ } for field names with spaces
-            ('MD', '@MD{1} ft'),
-        ],
-    ))
-
+    profile = figure(plot_width=600, plot_height=300, title="2 Dimensional Wellbore Profile")
+    profile.line(x='VS', y='TVD', line_width=10, line_color='black', source=source)
+    profile.add_tools(HoverTool(tooltips=[('TVD', '@TVD{1} ft'),('VS', '@VS{1} ft'), ('MD', '@MD{1} ft'), ],))   # use @{ } for field names with spaces
+    td_tvd = array[-1:, 3][0]
+    profile.y_range.start = td_tvd * 1.05  # bokeh charts starts axis from bottom left regardless of it is flipped or not
+    profile.y_range.end = 0
     profile.y_range.flipped = True
+
     profile.xaxis.axis_label = "Closure Distance, ft"
     profile.yaxis.axis_label = "TVD, ft"
     save(profile)

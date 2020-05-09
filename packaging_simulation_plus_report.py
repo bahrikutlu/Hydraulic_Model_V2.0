@@ -7,7 +7,8 @@ from utilities.unit_converters import *
 from utilities.utilities_for_input_processing import create_folders
 import datetime
 from model_engine.results_array_calculator import ResultArray
-from definitions import input_directional_plan_directory, output_raw_field_units
+from definitions import input_directional_plan_directory, output_raw_field_units, silentremove_all_files_in_folder, \
+    charts_folder
 
 
 def simulation_and_reporting_package(sheet_name):
@@ -15,6 +16,7 @@ def simulation_and_reporting_package(sheet_name):
 
     print("Simulation Started")
 
+    silentremove_all_files_in_folder(charts_folder)
     create_folders()
 
     print("Necessary folders are Created if they didn't already exist")
@@ -40,6 +42,8 @@ def simulation_and_reporting_package(sheet_name):
     bit = importer.bit()
     step = importer.calculation_step_difference()
     surface_lines_class = importer.surf_lines_class()
+    tool_joint_frequency = importer.tool_joint_frequency()
+    tool_joint_length = importer.tool_joint_length()
 
     print(f"Inputs are pulled from the sheet named {simulation_name} of input.xlsx")
 
