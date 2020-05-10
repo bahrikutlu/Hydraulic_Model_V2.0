@@ -14,12 +14,16 @@ flow_rate_q_input = 8.75226280952381
 mud_density_input = 8.33
 conduit_type = "pipe"
 length = 9.5
+tool_joint_od_input = 6.625
+tool_joint_id_input = 3.25
 
 #converted units for input
 hole_size = unit_converter_inches_to_meter(hole_size_input)
 flow_rate_q = unit_converter_flow_rate_gpm_to_m3persec(flow_rate_q_input)
 pipe_od = unit_converter_inches_to_meter(pipe_od_input)
 pipe_id = unit_converter_inches_to_meter(pipe_id_input)
+tool_joint_od = unit_converter_inches_to_meter(tool_joint_od_input)
+tool_joint_id = unit_converter_inches_to_meter(tool_joint_id_input)
 yield_stress_tao_y = unit_converter_yield_stress_field_units_to_pascal(yield_stress_tao_y_input)
 consistency_index_k = unit_converter_consistency_index_k_field_units_to_pascal(consistency_index_k_input)
 mud_density = unit_converter_density_ppg_to_kgm3(mud_density_input)
@@ -65,7 +69,7 @@ results = []
 for rate in flow_rates:
     pressure_drop = pressure_drop_calculator(yield_stress_tao_y, consistency_index_k, fluid_behavior_index_m,
                                              unit_converter_flow_rate_gpm_to_m3persec(rate), mud_density, eccentricity_e, conduit_type, hole_size, pipe_od,
-                                             pipe_id)
+                                             pipe_id, tool_joint_od)
     pressure_drop=unit_converter_pascalovermeter_to_psioverft(pressure_drop) * length
     results.append(pressure_drop)
 

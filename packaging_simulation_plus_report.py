@@ -82,13 +82,13 @@ def simulation_and_reporting_package(sheet_name):
                              input_directional_plan_directory, step, consistency_index_k_input, surface_lines_class)
 
     print("Inputs are processed and placed in an array, proceeding with pressure drop calculations...")
+
     if unit_system == 'field':
         input_data.pressure_drop_calculations_field_units(yield_stress_tao_y,
                                                                     consistency_index_k,
                                                                     fluid_behavior_index_m,
                                                                     flow_rate_q,
                                                                     mud_density,
-                                                                    eccentricity_e,
                                                                     bit_nozzles)
     else:
         input_data.pressure_drop_calculations_si_units(yield_stress_tao_y,
@@ -96,7 +96,6 @@ def simulation_and_reporting_package(sheet_name):
                                                                  fluid_behavior_index_m,
                                                                  flow_rate_q,
                                                                  mud_density,
-                                                                 eccentricity_e,
                                                                  bit_nozzles)
 
     print("Calculations for pressure and ECD are completed and results are saved in the output folder")

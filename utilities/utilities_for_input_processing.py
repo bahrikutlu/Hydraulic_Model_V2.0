@@ -2,6 +2,7 @@ import os
 from operator import itemgetter
 import numpy as np
 from scipy import interpolate
+from math import sqrt
 
 from definitions import output_directional_directory, raw_results, charts_folder, directional_plan_folder, \
     output_report, output_plots
@@ -234,3 +235,100 @@ class DiameterProfile:
 
         f = interpolate.interp1d(depth_list, inner_diam_list)
         return f(depth)
+
+    def tool_joint_outer_diameter_profile_calculator(self):
+        entire_string = self.entirestring  #
+        entire_string = sorted(entire_string, key=itemgetter(columns.string_input_columns['input_list_top_depth']))
+        tool_joint_outer_diameter_profile = []
+        drill_string_top_depth_list = []
+        for tool in entire_string:
+            length = len(tool)
+            if length > 5:  # tool joint information is input if number of items in list is >5
+                tool_joint_outer_diameter_profile.append(
+                    [tool[columns.string_input_columns['input_list_tool_joint_od']],
+                     tool[columns.string_input_columns['input_list_bottom_depth']]])
+            else:
+                tool_joint_outer_diameter_profile.append(
+                    [tool[columns.string_input_columns['input_list_outer_diameter']],
+                     tool[columns.string_input_columns['input_list_bottom_depth']]])
+            drill_string_top_depth_list.append(tool[columns.string_input_columns['input_list_top_depth']])
+        i = 0
+        for top_depth in drill_string_top_depth_list:
+            if top_depth > 0:
+                tool_joint_outer_diameter_profile[i - 1][1] = top_depth
+            i += 1
+        tool_joint_outer_diameter_profile.insert(0, [
+            entire_string[0][columns.string_input_columns['input_list_tool_joint_od']], 0])
+
+        i = 2
+        while i < len(tool_joint_outer_diameter_profile):
+            tool_joint_outer_diameter_profile.insert(i, [tool_joint_outer_diameter_profile[i][0],
+                                                         tool_joint_outer_diameter_profile[i - 1][1] + 1])
+            i += 2
+
+        return tool_joint_outer_diameter_profile
+
+    def tool_joint_od_finder_with_depth_input(self, depth):
+        outer_diam_list = []
+        depth_list = []
+        for item in self.tool_joint_outer_diameter_profile_calculator():
+            outer_diam_list.append(item[0])
+            depth_list.append(item[1])
+
+        f = interpolate.interp1d(depth_list, outer_diam_list)
+        return f(depth)
+
+    def tool_joint_inner_diameter_profile_calculator(self):
+        entire_string = self.entirestring  #
+        entire_string = sorted(entire_string, key=itemgetter(columns.string_input_columns['input_list_top_depth']))
+        tool_joint_inner_diameter_profile = []
+        drill_string_top_depth_list = []
+        for tool in entire_string:
+            length = len(tool)
+            if length > 5:  # tool joint information is input if number of items in list is >5
+                tool_joint_inner_diameter_profile.append(
+                    [tool[columns.string_input_columns['input_list_tool_joint_id']],
+                     tool[columns.string_input_columns['input_list_bottom_depth']]])
+            else:
+                tool_joint_inner_diameter_profile.append(
+                    [tool[columns.string_input_columns['input_list_outer_diameter']],
+                     tool[columns.string_input_columns['input_list_bottom_depth']]])
+            drill_string_top_depth_list.append(tool[columns.string_input_columns['input_list_top_depth']])
+        i = 0
+        for top_depth in drill_string_top_depth_list:
+            if top_depth > 0:
+                tool_joint_inner_diameter_profile[i - 1][1] = top_depth
+            i += 1
+        tool_joint_inner_diameter_profile.insert(0, [
+            entire_string[0][columns.string_input_columns['input_list_tool_joint_id']], 0])
+
+        i = 2
+        while i < len(tool_joint_inner_diameter_profile):
+            tool_joint_inner_diameter_profile.insert(i, [tool_joint_inner_diameter_profile[i][0],
+                                                         tool_joint_inner_diameter_profile[i - 1][1] + 1])
+            i += 2
+
+        return tool_joint_inner_diameter_profile
+
+    def tool_joint_id_finder_with_depth_input(self, depth):
+        inner_diam_list = []
+        depth_list = []
+        for item in self.tool_joint_inner_diameter_profile_calculator():
+            inner_diam_list.append(item[0])
+            depth_list.append(item[1])
+
+        f = interpolate.interp1d(depth_list, inner_diam_list)
+        return f(depth)
+
+
+# Non-Newtonian Fluid Flow in Eccentric Annuli and Its Application to Petroleum Engineering Problems. Haciislamouglu 1999
+def annulus_pressure_coefficient(generalized_n, string_od, wellbore_size, tj_od):
+    e = (wellbore_size-tj_od)/(wellbore_size-string_od)
+    n = generalized_n
+    di = string_od
+    do = wellbore_size
+    term1 = 0.072 * e / n * (di/do) ** 0.8454
+    term2 = 1.5 * (e ** 2) * sqrt(n) * (di/do) ** 0.1852
+    term3 = 0.96 * (e ** 3) * sqrt(n) * (di/do) ** 0.2527
+    r = 1 - term1 - term2 + term3
+    return r

@@ -19,8 +19,8 @@ string_input_columns = {'input_list_outer_diameter': 0,
                         'input_list_bottom_depth': 2,
                         'input_list_top_depth': 3,
                         'input_list_component_type': 4,
-                        'tool_joint_od': 5,
-                        'tool_joint_id': 6}
+                        'input_list_tool_joint_od': 5,
+                        'input_list_tool_joint_id': 6}
 
 directional_plan_column_names = {"measured_depth": 0,
                                  "inclination": 1,

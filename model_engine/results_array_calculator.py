@@ -33,7 +33,9 @@ class ResultArray:
         self.ann_id_list = step_calculator_zeros(self.bit_depth, self.step)
         self.string_od_list = step_calculator_zeros(self.bit_depth, self.step)
         self.string_id_list = step_calculator_zeros(self.bit_depth, self.step)
-        self.diameter_calculator = DiameterProfile(self.csgdesign, self.drillstring, self.bha,self.openholesize)
+        self.tj_od_list = step_calculator_zeros(self.bit_depth, self.step)
+        self.tj_id_list = step_calculator_zeros(self.bit_depth, self.step)
+        self.diameter_calculator = DiameterProfile(self.csgdesign, self.drillstring, self.bha, self.openholesize)
 
     def show_inputs_in_field_units(self):
         index = 0
@@ -57,6 +59,26 @@ class ResultArray:
 
         return composite_list_field_units
 
+    def tj_od_id_array_field_units(self):
+        index = 0
+        for i in self.measured_depths:
+            tj_inner_diameter = self.diameter_calculator.tool_joint_id_finder_with_depth_input(i)
+            tj_outer_diameter = self.diameter_calculator.tool_joint_od_finder_with_depth_input(i)
+
+            self.tj_od_list[index] = tj_outer_diameter
+            self.tj_id_list[index] = tj_inner_diameter
+
+            index += 1
+
+        array = np.hstack((self.tj_od_list, self.tj_id_list))
+        return array
+
+    def tj_od_id_array_si_units(self):
+        tool_joints_si_units = self.tj_od_id_array_field_units()
+        tool_joints_si_units[:, 0] = unit_converter_inches_to_meter(tool_joints_si_units[:, 0])
+        tool_joints_si_units[:, 1] = unit_converter_inches_to_meter(tool_joints_si_units[:, 1])
+        return tool_joints_si_units
+
     def show_inputs_in_si_units(self):
         composite_list_si_units = self.show_inputs_in_field_units()
         composite_list_si_units[:, columns.names['composite_list_columns_md']] = unit_converter_feet_to_meter(
@@ -74,33 +96,39 @@ class ResultArray:
         return composite_list_si_units
 
     def pressure_drop_calculations_si_units(self, yield_stress_tao_y, consistency_index_k, fluid_behavior_index_m,
-                                            flow_rate_q, mud_density, eccentricity_e, nozzle_list):
+                                            flow_rate_q, mud_density, nozzle_list):
         results_si_units = self.show_inputs_in_si_units()
         shape_of_data = results_si_units.shape
         row_count = shape_of_data[0]
         results_si_units = np.c_[results_si_units, np.zeros(row_count), np.zeros(row_count)]
         row_index = 0
         length_of_steps = unit_converter_feet_to_meter(self.step)
+        tool_joint_dimensions = self.tj_od_id_array_si_units()
+        # define variables for tool joint effect calculations
+        joint_length = 9.144
+        tj_length = 0.4572
+        a = joint_length / length_of_steps
+        b = np.ceil(a)  # this number means add tool joint pressure drop to every b rows
+        coefficient = b/a  # this number is to be multiplied with the tool joint pressure drop
         for row in self.show_inputs_in_si_units():
             pipe_p_drop = (pressure_drop_calculator(yield_stress_tao_y, consistency_index_k,fluid_behavior_index_m,
-                                                   flow_rate_q, mud_density,eccentricity_e, 'pipe',
+                                                   flow_rate_q, mud_density, 'pipe',
                                                    row[columns.names['composite_list_columns_annulus_diameter']],
                                                    row[columns.names['composite_list_columns_string_od']],
-                                                   row[columns.names['composite_list_columns_string_id']])) * length_of_steps
+                                                   row[columns.names['composite_list_columns_string_id']], tool_joint_dimensions[row_index][0], tool_joint_dimensions[row_index][1])) * length_of_steps
             if row_index == 0:
                 p_drop_pipe_si_units = misc_parasitic_losses(nozzle_list, mud_density, flow_rate_q, self.bha, self.k, self.surfacelineclass)
             else:
                 p_drop_pipe_si_units = pipe_p_drop
+
             p_drop_annular_si_units = (pressure_drop_calculator(yield_stress_tao_y, consistency_index_k,
-                                                               fluid_behavior_index_m, flow_rate_q, mud_density,
-                                                               eccentricity_e, 'annular',
+                                                               fluid_behavior_index_m, flow_rate_q, mud_density, 'annular',
                                                                row[columns.names['composite_list_columns_annulus_diameter']],
                                                                row[columns.names['composite_list_columns_string_od']],
-                                                               row[columns.names['composite_list_columns_string_id']])) * length_of_steps
-            results_si_units[
-                row_index, columns.names['composite_list_columns_pipe_pressure_drop']] = p_drop_pipe_si_units
-            results_si_units[
-                row_index, columns.names['composite_list_columns_annulus_pressure_drop']] = p_drop_annular_si_units
+                                                               row[columns.names['composite_list_columns_string_id']], tool_joint_dimensions[row_index][0], tool_joint_dimensions[row_index][1])) * length_of_steps
+
+            results_si_units[row_index, columns.names['composite_list_columns_pipe_pressure_drop']] = p_drop_pipe_si_units
+            results_si_units[row_index, columns.names['composite_list_columns_annulus_pressure_drop']] = p_drop_annular_si_units
             row_index += 1
 
 
@@ -116,11 +144,11 @@ class ResultArray:
         return results_si_units
 
     def pressure_drop_calculations_field_units(self, yield_stress_tao_y, consistency_index_k, fluid_behavior_index_m,
-                                               flow_rate_q, mud_density, eccentricity_e, nozzle_list):
+                                               flow_rate_q, mud_density, nozzle_list):
         results_field_units = self.show_inputs_in_field_units()
         pressure_drops = np.copy(
             self.pressure_drop_calculations_si_units(yield_stress_tao_y, consistency_index_k, fluid_behavior_index_m,
-                                                     flow_rate_q, mud_density, eccentricity_e, nozzle_list))
+                                                     flow_rate_q, mud_density, nozzle_list))
         equivalent_circulating_density = pressure_drops[:,columns.names['composite_list_columns_equivalent_circulating_density']]
         equivalent_circulating_density = unit_converter_density_kgm3_to_ppg(equivalent_circulating_density)
         equivalent_circulating_density = equivalent_circulating_density.reshape(-1, 1)
@@ -134,6 +162,8 @@ class ResultArray:
         np.savetxt(file_name_and_directory, results_field_units, delimiter=',', fmt='%1.3f')
         data_frame_creator(file_name_and_directory)
         return results_field_units
+
+
 
 
 def cumulative_pressure_drop_calculator(results_array, mud_density, flow_rate_q, bit_nozzles):
