@@ -80,13 +80,13 @@ class ResultArray:
         row_count = shape_of_data[0]
         results_si_units = np.c_[results_si_units, np.zeros(row_count), np.zeros(row_count)]
         row_index = 0
-        print(results_si_units[1][0]-results_si_units[0][0])
+        length_of_steps = unit_converter_feet_to_meter(self.step)
         for row in self.show_inputs_in_si_units():
             pipe_p_drop = (pressure_drop_calculator(yield_stress_tao_y, consistency_index_k,fluid_behavior_index_m,
                                                    flow_rate_q, mud_density,eccentricity_e, 'pipe',
                                                    row[columns.names['composite_list_columns_annulus_diameter']],
                                                    row[columns.names['composite_list_columns_string_od']],
-                                                   row[columns.names['composite_list_columns_string_id']])) * self.step
+                                                   row[columns.names['composite_list_columns_string_id']])) * length_of_steps
             if row_index == 0:
                 p_drop_pipe_si_units = misc_parasitic_losses(nozzle_list, mud_density, flow_rate_q, self.bha, self.k, self.surfacelineclass)
             else:
@@ -96,7 +96,7 @@ class ResultArray:
                                                                eccentricity_e, 'annular',
                                                                row[columns.names['composite_list_columns_annulus_diameter']],
                                                                row[columns.names['composite_list_columns_string_od']],
-                                                               row[columns.names['composite_list_columns_string_id']])) * self.step
+                                                               row[columns.names['composite_list_columns_string_id']])) * length_of_steps
             results_si_units[
                 row_index, columns.names['composite_list_columns_pipe_pressure_drop']] = p_drop_pipe_si_units
             results_si_units[
@@ -125,7 +125,7 @@ class ResultArray:
         equivalent_circulating_density = unit_converter_density_kgm3_to_ppg(equivalent_circulating_density)
         equivalent_circulating_density = equivalent_circulating_density.reshape(-1, 1)
         pressure_drops = pressure_drops[:, columns.names['composite_list_columns_pipe_pressure_drop']:(columns.names['composite_list_columns_pump_pressure'] + 1)]
-        pressure_drops = unit_converter_pascalovermeter_to_psioverft(pressure_drops)
+        pressure_drops = unit_converter_pascal_to_psi(pressure_drops)
 
         results_field_units = np.concatenate([results_field_units, pressure_drops, equivalent_circulating_density],
                                              axis=1)
@@ -162,7 +162,7 @@ def equivalent_circulating_density_calculator(results_array, mud_density):
     row_index = 0
     for _ in ecd:
         ecd[row_index] = (cumulative_annular_p_drop[row_index] / (
-                    32.2 * true_vertical_depth[row_index]) + mud_density) if row_index > 0 else mud_density
+                    9.81 * true_vertical_depth[row_index]) + mud_density) if row_index > 0 else mud_density
         row_index += 1
 
     results_array = np.concatenate([results_array, ecd], axis=1)

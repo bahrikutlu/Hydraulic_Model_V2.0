@@ -9,9 +9,7 @@ names = {'composite_list_columns_md': 0,
          'composite_list_columns_cumulative_pipe_pressure_drop': 8,
          'composite_list_columns_cumulative_annular_pressure_drop': 9,
          'composite_list_columns_pump_pressure': 10,
-         'composite_list_columns_equivalent_circulating_density': 11,
-         'composite_list_columns_tool_joint_od': 12,
-         'composite_list_columns_tool_joint_id': 13}
+         'composite_list_columns_equivalent_circulating_density': 11}
 
 # Note: the column names in dataframe columns is used in the report_generator.py.
 dataframe_columns = ['MD', 'INC', 'TVD', 'Pipe P Drop', 'Annular P Drop', 'Pump Pressure', 'ECD']
