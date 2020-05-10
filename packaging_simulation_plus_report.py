@@ -35,15 +35,14 @@ def simulation_and_reporting_package(sheet_name):
     shear_stress = importer.viscometer_readings()[1]
     fluid_type = importer.fluid_type()
     hole_size_input = importer.hole_size()
-    eccentricity_e = importer.eccentricity()
     flow_rate_q_input = importer.flow_rate()
     mud_density_input = importer.mud_weight()
     unit_system = importer.units()
     bit = importer.bit()
     step = importer.calculation_step_difference()
     surface_lines_class = importer.surf_lines_class()
-    tool_joint_frequency = importer.tool_joint_frequency()
-    tool_joint_length = importer.tool_joint_length()
+    tool_joint_frequency_input = importer.tool_joint_frequency()
+    tool_joint_length_input = importer.tool_joint_length()
 
     print(f"Inputs are pulled from the sheet named {simulation_name} of input.xlsx")
 
@@ -71,6 +70,8 @@ def simulation_and_reporting_package(sheet_name):
     yield_stress_tao_y = unit_converter_yield_stress_field_units_to_pascal(yield_stress_tao_y_input)
     consistency_index_k = unit_converter_consistency_index_k_field_units_to_pascal(consistency_index_k_input)
     mud_density = unit_converter_density_ppg_to_kgm3(mud_density_input)
+    tool_joint_frequency = unit_converter_feet_to_meter(tool_joint_frequency_input)
+    tool_joint_length = unit_converter_feet_to_meter(tool_joint_length_input)
 
     print("Inputs are converted to SI units for calculations")
 
@@ -79,24 +80,31 @@ def simulation_and_reporting_package(sheet_name):
                              bottom_hole_assembly,
                              casing_design,
                              hole_size_input,
-                             input_directional_plan_directory, step, consistency_index_k_input, surface_lines_class)
+                             input_directional_plan_directory,
+                             step,
+                             consistency_index_k_input,
+                             surface_lines_class)
 
     print("Inputs are processed and placed in an array, proceeding with pressure drop calculations...")
 
     if unit_system == 'field':
         input_data.pressure_drop_calculations_field_units(yield_stress_tao_y,
-                                                                    consistency_index_k,
-                                                                    fluid_behavior_index_m,
-                                                                    flow_rate_q,
-                                                                    mud_density,
-                                                                    bit_nozzles)
+                                                          consistency_index_k,
+                                                          fluid_behavior_index_m,
+                                                          flow_rate_q,
+                                                          mud_density,
+                                                          bit_nozzles,
+                                                          tool_joint_frequency,
+                                                          tool_joint_length)
     else:
         input_data.pressure_drop_calculations_si_units(yield_stress_tao_y,
-                                                                 consistency_index_k,
-                                                                 fluid_behavior_index_m,
-                                                                 flow_rate_q,
-                                                                 mud_density,
-                                                                 bit_nozzles)
+                                                       consistency_index_k,
+                                                       fluid_behavior_index_m,
+                                                       flow_rate_q,
+                                                       mud_density,
+                                                       bit_nozzles,
+                                                       tool_joint_frequency,
+                                                       tool_joint_length)
 
     print("Calculations for pressure and ECD are completed and results are saved in the output folder")
 

@@ -152,7 +152,7 @@ def fann_friction_factor(generalized_reynolds_number,
                          geometric_parameter_a,
                          geometric_parameter_b):
     transition_reynolds_number = 2100
-    turbulent_reynolds_number = 2400
+    turbulent_reynolds_number = 2400 #2400
 
     f_laminar = 16/generalized_reynolds_number
 
@@ -179,7 +179,7 @@ def pressure_drop_calculator(yield_stress_tao_y,
                              conduit_type,
                              hole_size,
                              pipe_od,
-                             pipe_id, tool_joint_od, tool_joint_id):
+                             pipe_id, tool_joint_od):
 
     d_hyd = hydraulic_diameter(hole_size, pipe_od, pipe_id, conduit_type)
 
@@ -196,7 +196,6 @@ def pressure_drop_calculator(yield_stress_tao_y,
 
         generalized_consistency_index_updated = generalized_consistency_index_k_prime(tao_w_initial,shear_rate_updated,flow_behavior_index_updated)
         generalized_reynolds_number_updated = generalized_reynolds_number(fluid_density,velocity,hole_size,pipe_od,pipe_id,flow_behavior_index_updated,generalized_consistency_index_updated,conduit_type)
-
         fann_friction_factor_updated = fann_friction_factor(generalized_reynolds_number_updated,flow_behavior_index_updated,geometric_parameter_a,geometric_parameter_b)
 
         tao_w_updated = fann_friction_factor_updated * fluid_density *(velocity**2)/2

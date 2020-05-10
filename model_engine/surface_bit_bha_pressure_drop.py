@@ -72,5 +72,5 @@ def misc_parasitic_losses(nozzle_list, mud_density_kgm3, flow_rate_m3s, bha, k, 
     flow_rate_gpm = unit_converter_flow_rate_m3persec_to_gpm(flow_rate_m3s)
     bit_p_drop = bit_pressure_drop_psi(nozzle_list, mud_density_ppg, flow_rate_gpm)
     result = surface_pressure_drop(mud_density_ppg, flow_rate_gpm, k, surface_class) + bit_p_drop + mwd_pressure_drop(flow_rate_m3s, bha) + mud_motor_pressure_drop(flow_rate_m3s, bha)
-    result = unit_converter_psi_to_pascal(result) * 3.28084  #result is returned in Pascal, for the results array
+    result = unit_converter_psi_to_pascal(result)  #result is returned in Pascal, for the results array
     return result
